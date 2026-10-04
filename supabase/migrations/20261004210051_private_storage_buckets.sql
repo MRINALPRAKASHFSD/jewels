@@ -11,5 +11,5 @@ ON CONFLICT (id) DO UPDATE SET public = false;
 -- Remove anon access from storage.objects so unauthorized users cannot bypass signed URLs
 DROP POLICY IF EXISTS "Public can view site images" ON storage.objects;
 
-CREATE POLICY "Authenticated users can view site images" ON storage.objects FOR SELECT TO authenticated
-  USING (bucket_id IN ('products','collections','lookbook','brand','homepage'));
+CREATE POLICY "Staff can view site images" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id IN ('products','collections','lookbook','brand','homepage') AND private.is_staff(auth.uid()));
