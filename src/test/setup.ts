@@ -1,5 +1,11 @@
 import "@testing-library/jest-dom/vitest";
 
+try {
+  process.loadEnvFile?.();
+} catch {
+  // Ignore if .env is missing or already loaded
+}
+
 Object.defineProperty(window, "scrollTo", {
   writable: true,
   value: () => {},
