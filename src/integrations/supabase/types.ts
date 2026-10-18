@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.18"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       audit_logs: {
@@ -206,6 +231,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      enquiry_rate_limits: {
+        Row: {
+          abuse_key: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          abuse_key: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          abuse_key?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
       }
       homepage_drafts: {
         Row: {
@@ -540,7 +583,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_and_record_enquiry_rate_limit: {
+        Args: {
+          p_abuse_key: string
+          p_cooldown_seconds?: number
+          p_max_requests?: number
+          p_window_seconds?: number
+        }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "editor"
@@ -669,6 +720,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["admin", "editor"],
