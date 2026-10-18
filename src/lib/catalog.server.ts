@@ -2,6 +2,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { Availability, CatalogProduct, ProductSummary } from "@/data/catalog";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export type PublicDb = SupabaseClient<Database>;
 
@@ -46,7 +47,7 @@ export async function signUrls(db: PublicDb, urls: (string | null | undefined)[]
   }
   const out = new Map<string, string>();
   await Promise.all([...byBucket].map(async ([bucket, paths]) => {
-    const { data, error } = await db.storage.from(bucket).createSignedUrls([...paths], SIGN_TTL);
+    const { data, error } = await supabaseAdmin.storage.from(bucket).createSignedUrls([...paths], SIGN_TTL);
     if (error) { console.error("[catalog] sign", error); return; }
     for (const d of data ?? []) if (d.signedUrl && d.path) out.set(`${bucket}/${d.path}`, d.signedUrl);
   }));
