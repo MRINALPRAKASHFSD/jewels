@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HomeView } from "@/components/site/HomeView";
 import { mergeHome } from "@/data/home";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { collectionsQuery, featuredProductsQuery, homeContentQuery } from "@/lib/catalog.queries";
+import { collectionsQuery, featuredProductsQuery, homeContentQuery, lookbookQuery } from "@/lib/catalog.queries";
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_site/")({
     context.queryClient.ensureQueryData(collectionsQuery()),
     context.queryClient.ensureQueryData(featuredProductsQuery(4)),
     context.queryClient.ensureQueryData(homeContentQuery()),
+    context.queryClient.ensureQueryData(lookbookQuery()),
   ]),
   component: Home,
 });
@@ -25,5 +26,6 @@ function Home() {
   const { data: collections } = useSuspenseQuery(collectionsQuery());
   const { data: products } = useSuspenseQuery(featuredProductsQuery(4));
   const { data: content } = useSuspenseQuery(homeContentQuery());
-  return <HomeView home={mergeHome(content)} collections={collections} products={products} />;
+  const { data: lookbook } = useSuspenseQuery(lookbookQuery());
+  return <HomeView home={mergeHome(content)} collections={collections} products={products} lookbook={lookbook} />;
 }

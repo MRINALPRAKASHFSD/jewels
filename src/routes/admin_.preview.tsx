@@ -6,7 +6,7 @@ import { HomeView } from "@/components/site/HomeView";
 import { mergeHome, type HomeSections } from "@/data/home";
 import { getContentSections, signRefs } from "@/lib/admin/cms";
 import { loadAdminSession } from "@/lib/admin/session";
-import { collectionsQuery, featuredProductsQuery } from "@/lib/catalog.queries";
+import { collectionsQuery, featuredProductsQuery, lookbookQuery } from "@/lib/catalog.queries";
 
 // Staff-only preview of the homepage with unpublished drafts. Nothing here is visible to visitors.
 export const Route = createFileRoute("/admin_/preview")({
@@ -24,8 +24,26 @@ export const Route = createFileRoute("/admin_/preview")({
 async function draftSections(): Promise<HomeSections> {
   const rows = await getContentSections();
   const pick = rows.map((r) => ({ key: r.key, ...(r.draft ?? r.published) }));
-  const sign = await signRefs(pick.map((r) => r.content["image"]));
-  return Object.fromEntries(pick.map((r) => [r.key, { active: r.active, content: { ...r.content, ...(r.content["image"] ? { image: sign(r.content["image"]) ?? "" } : {}) } }]));
+  const imageUrls: string[] = [];
+  for (const r of pick) {
+    for (const [k, v] of Object.entries(r.content)) {
+      if (typeof v === "string" && (k.toLowerCase().includes("image") || v.includes("/storage/v1/object/"))) {
+        imageUrls.push(v);
+      }
+    }
+  }
+  const sign = await signRefs(imageUrls);
+  return Object.fromEntries(
+    pick.map((r) => {
+      const content = { ...r.content };
+      for (const [k, v] of Object.entries(content)) {
+        if (typeof v === "string" && (k.toLowerCase().includes("image") || v.includes("/storage/v1/object/"))) {
+          content[k] = sign(v) ?? "";
+        }
+      }
+      return [r.key, { active: r.active, content }];
+    }),
+  );
 }
 
 function Preview() {
@@ -48,5 +66,6 @@ function Preview() {
 function Body({ content }: { content: HomeSections }) {
   const { data: collections } = useSuspenseQuery(collectionsQuery());
   const { data: products } = useSuspenseQuery(featuredProductsQuery(4));
-  return <HomeView home={mergeHome(content)} collections={collections} products={products} />;
+  const { data: lookbook } = useSuspenseQuery(lookbookQuery());
+  return <HomeView home={mergeHome(content)} collections={collections} products={products} lookbook={lookbook} />;
 }

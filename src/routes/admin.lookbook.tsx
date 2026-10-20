@@ -31,7 +31,10 @@ function LookbookPage() {
   const [saving, setSaving] = useState(false);
   const [pending, setPending] = useState<{ item: Item; status: Status } | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }), useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 6 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-  const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "lookbook-cms"] });
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ["admin", "lookbook-cms"] });
+    qc.invalidateQueries({ queryKey: ["lookbook"] });
+  };
 
   const onDragEnd = async (e: DragEndEvent) => {
     if (!e.over || e.active.id === e.over.id) return;

@@ -38,7 +38,13 @@ export const homeCopy = {
     ] as const,
   },
   lookbook: { eyebrow: "The Lookbook", title: "Stories told in light, form and detail." },
-  appointment: { eyebrow: "Private Appointments", title: "Find your piece", body: "Discover the jewellery that belongs to your story." },
+  appointment: {
+    eyebrow: "Private Appointments",
+    title: "Find your piece",
+    body: "Discover the jewellery that belongs to your story.",
+    details: "Visit the atelier by appointment, or speak with us directly — we reply personally, usually within the hour.",
+    cta: "Book an Appointment",
+  },
 };
 
 // WhatsApp message templates. The number itself lives in site_settings (key: whatsapp_number).
