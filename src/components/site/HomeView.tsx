@@ -4,8 +4,8 @@ import { motion } from "motion/react";
 import { CollectionTile, ProductCard } from "@/components/site/cards";
 import { Container, ImageReveal, Reveal, SectionHeading, ease, luxButton } from "@/components/site/primitives";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
-import { homeCopy as copy, media } from "@/data/content";
-import type { CollectionItem, ProductSummary } from "@/data/catalog";
+import { media } from "@/data/content";
+import type { CollectionItem, LookbookItem, ProductSummary } from "@/data/catalog";
 import type { HomeView as HomeViewData } from "@/data/home";
 
 const arrowLink = "eyebrow group inline-flex items-center gap-3 py-2";
@@ -13,10 +13,18 @@ function Arrow() {
   return <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 ease-lux group-hover:translate-x-1" strokeWidth={1.25} />;
 }
 
-export function HomeView({ home, collections, products }: { home: HomeViewData; collections: CollectionItem[]; products: ProductSummary[] }) {
+export function HomeView({ home, collections, products, lookbook }: { home: HomeViewData; collections: CollectionItem[]; products: ProductSummary[]; lookbook?: LookbookItem[] }) {
   const [c0, c1, c2] = collections;
+  const [l0, l1, l2] = lookbook ?? [];
   const { hero, story, quote, craftsmanship: cr, appointment: ap } = Object.fromEntries(Object.entries(home).map(([k, v]) => [k, v.f])) as Record<string, Record<string, string>>;
   const on = (k: string) => home[k]?.active !== false;
+
+  const craftSteps = [
+    { n: "01", title: cr!["step1Title"], text: cr!["step1"], image: cr!["step1Image"] },
+    { n: "02", title: cr!["step2Title"], text: cr!["step2"], image: cr!["step2Image"] },
+    { n: "03", title: cr!["step3Title"], text: cr!["step3"], image: cr!["step3Image"] },
+    { n: "04", title: cr!["step4Title"], text: cr!["step4"], image: cr!["step4Image"] },
+  ];
   return (
     <>
       {/* HERO */}
@@ -120,7 +128,7 @@ export function HomeView({ home, collections, products }: { home: HomeViewData; 
           <ImageReveal src={cr!["image"]!} alt="A goldsmith polishing a gold ring at a wooden bench" ratio="wide" className="mt-16 lg:mt-20 lg:aspect-[21/9]" position="center 40%" width={1152} height={1408} />
           <ol className="relative mt-20 grid gap-14 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4 lg:gap-10">
             <span aria-hidden className="absolute left-0 right-0 top-[7px] hidden h-px bg-border lg:block" />
-            {copy.craft.steps.map((s, i) => (
+            {craftSteps.map((s, i) => (
               <Reveal key={s.n} delay={i * 0.12}>
                 <li className="relative list-none">
                   <span aria-hidden className="relative z-10 hidden h-[15px] w-[15px] items-center justify-center bg-espresso lg:flex"><span className="h-[5px] w-[5px] rotate-45 bg-champagne" /></span>
@@ -128,8 +136,8 @@ export function HomeView({ home, collections, products }: { home: HomeViewData; 
                     <span className="font-display text-xl text-champagne">{s.n}</span>
                     <h3 className="eyebrow">{s.title}</h3>
                   </div>
-                  <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">{cr![`step${i + 1}`]}</p>
-                  <ImageReveal src={media.craftStepImages[s.key]} alt={`${s.title} stage`} ratio="landscape" className="mt-6 hidden opacity-80 grayscale-[35%] sm:block" />
+                  <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+                  <ImageReveal src={s.image} alt={`${s.title} stage`} ratio="landscape" className="mt-6 hidden opacity-80 grayscale-[35%] sm:block" />
                 </li>
               </Reveal>
             ))}
@@ -145,9 +153,9 @@ export function HomeView({ home, collections, products }: { home: HomeViewData; 
             <Reveal delay={0.1} className="lg:col-span-5 lg:justify-self-end"><Link to="/lookbook" className={arrowLink}>View lookbook <Arrow /></Link></Reveal>
           </div>
           <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-5 lg:mt-20 lg:grid-cols-12 lg:gap-6">
-            <ImageReveal src={media.lookbookImages[0]} alt="Woman in an ivory saree wearing statement gold chandbali earrings" ratio="portrait" className="col-span-2 sm:col-span-1 lg:col-span-5 lg:row-span-2" />
-            <ImageReveal src={media.lookbookImages[2]} alt="Detail of a diamond ear climber" ratio="tall" className="lg:col-span-3 lg:col-start-7 lg:mt-24" />
-            <ImageReveal src={media.lookbookImages[1]} alt="Woman by a sunlit window wearing layered gold necklaces" ratio="landscape" className="col-span-2 sm:col-span-1 lg:col-span-6 lg:col-start-7 lg:self-end" />
+            <ImageReveal src={l0?.image || media.lookbookImages[0]} alt={l0?.title || "Woman in an ivory saree wearing statement gold chandbali earrings"} ratio="portrait" className="col-span-2 sm:col-span-1 lg:col-span-5 lg:row-span-2" />
+            <ImageReveal src={l1?.image || media.lookbookImages[2]} alt={l1?.title || "Detail of a diamond ear climber"} ratio="tall" className="lg:col-span-3 lg:col-start-7 lg:mt-24" />
+            <ImageReveal src={l2?.image || media.lookbookImages[1]} alt={l2?.title || "Woman by a sunlit window wearing layered gold necklaces"} ratio="landscape" className="col-span-2 sm:col-span-1 lg:col-span-6 lg:col-start-7 lg:self-end" />
           </div>
         </Container>
       </section>)}
@@ -160,9 +168,9 @@ export function HomeView({ home, collections, products }: { home: HomeViewData; 
             <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl">{ap!["heading"]}</h2>
           </Reveal>
           <Reveal delay={0.15} className="lg:col-span-5 lg:col-start-8">
-            <p className="text-[0.95rem] leading-relaxed text-muted-foreground">{ap!["body"]} Visit the atelier by appointment, or speak with us directly — we reply personally, usually within the hour.</p>
+            <p className="text-[0.95rem] leading-relaxed text-muted-foreground">{ap!["body"]}{ap!["details"] ? ` ${ap!["details"]}` : ""}</p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <Link to="/contact" className={luxButton()}>Book an Appointment</Link>
+              <Link to="/contact" className={luxButton()}>{ap!["cta"] || "Book an Appointment"}</Link>
               <WhatsAppButton />
             </div>
           </Reveal>

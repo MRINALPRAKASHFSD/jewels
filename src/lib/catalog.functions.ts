@@ -176,8 +176,24 @@ export const getHomeContent = createServerFn({ method: "GET" }).handler(async ()
   const { data, error } = await db.from("homepage_sections").select("section_key, content, is_active");
   if (error) fail("getHomeContent", error);
   const rows = (data ?? []).map((r) => ({ key: r.section_key, active: r.is_active, content: (r.content ?? {}) as Record<string, string> }));
-  const signed = await signUrls(db, rows.map((r) => r.content["image"]));
+  const imageUrls: string[] = [];
+  for (const r of rows) {
+    for (const [k, v] of Object.entries(r.content)) {
+      if (typeof v === "string" && (k.toLowerCase().includes("image") || v.includes("/storage/v1/object/"))) {
+        imageUrls.push(v);
+      }
+    }
+  }
+  const signed = await signUrls(db, imageUrls);
   const out: Record<string, { active: boolean; content: Record<string, string> }> = {};
-  for (const r of rows) out[r.key] = { active: r.active, content: { ...r.content, ...(r.content["image"] ? { image: resolveUrl(signed, r.content["image"]) ?? "" } : {}) } };
+  for (const r of rows) {
+    const content = { ...r.content };
+    for (const [k, v] of Object.entries(content)) {
+      if (typeof v === "string" && (k.toLowerCase().includes("image") || v.includes("/storage/v1/object/"))) {
+        content[k] = resolveUrl(signed, v) ?? "";
+      }
+    }
+    out[r.key] = { active: r.active, content };
+  }
   return out;
 });

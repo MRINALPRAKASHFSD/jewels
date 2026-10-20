@@ -59,7 +59,20 @@ function SectionEditor({ row }: { row: Row }) {
   const [busy, setBusy] = useState<"draft" | "publish" | "discard" | null>(null);
   const [confirm, setConfirm] = useState(false);
   useUnsavedGuard(dirty);
-  useEffect(() => { signRefs([content["image"]]).then((s) => setPreviews({ image: s(content["image"]) ?? "" })); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const imgFields = def.fields.filter((f) => f.type === "image").map((f) => f.name);
+    const urls = imgFields.map((name) => content[name]).filter(Boolean) as string[];
+    if (urls.length) {
+      signRefs(urls).then((s) => {
+        const p: Record<string, string> = {};
+        for (const name of imgFields) {
+          const u = content[name];
+          if (u) p[name] = s(u) ?? "";
+        }
+        setPreviews((prev) => ({ ...prev, ...p }));
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const set = (k: string, v: string) => { setDirty(true); setContent((c) => ({ ...c, [k]: v })); };
   const run = async (kind: "draft" | "publish" | "discard") => {
