@@ -7,7 +7,7 @@ import { GripVertical, Loader2, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AdminPageHeader, AdminState, Panel, StatusBadge, adminBtn, adminBtnGhost } from "@/components/admin/AdminUI";
-import { Check, Confirm, Field, ImageField, inputCls } from "@/components/admin/cms-ui";
+import { Check, Confirm, Field, ImageField, inputCls, useUnsavedGuard } from "@/components/admin/cms-ui";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { listLookbook, reorderLookbook, saveLookbook, setLookbookStatus, type LookbookValues, type Status } from "@/lib/admin/cms";
 import { can } from "@/lib/admin/permissions";
@@ -28,12 +28,23 @@ function LookbookPage() {
   const [items, setItems] = useState<Item[]>([]);
   useEffect(() => { if (data) setItems(data); }, [data]);
   const [editing, setEditing] = useState<{ id: string | null; v: LookbookValues; preview: string } | null>(null);
+  const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [pending, setPending] = useState<{ item: Item; status: Status } | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }), useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 6 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  useUnsavedGuard(!!editing && dirty);
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin", "lookbook-cms"] });
     qc.invalidateQueries({ queryKey: ["lookbook"] });
+  };
+
+  const closeEditor = () => {
+    if (saving) return;
+    if (dirty && !window.confirm("You have unsaved changes. Leave without saving?")) {
+      return;
+    }
+    setDirty(false);
+    setEditing(null);
   };
 
   const onDragEnd = async (e: DragEndEvent) => {
@@ -49,7 +60,7 @@ function LookbookPage() {
     try {
       await saveLookbook(editing.id, { ...editing.v, status }, items.length);
       toast.success(status === "published" ? "Lookbook item published." : "Lookbook item saved.");
-      setEditing(null); refresh();
+      setDirty(false); setEditing(null); refresh();
     } catch (e) { toast.error((e as Error).message); } finally { setSaving(false); }
   };
   const change = async (item: Item, status: Status) => {
@@ -61,14 +72,14 @@ function LookbookPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader title="Lookbook" description="Editorial images on the Lookbook page. Drag to set the order."
-        actions={can(user.role, "lookbook", "create") && <button onClick={() => setEditing({ id: null, v: empty, preview: "" })} className={adminBtn}><Plus className="h-3.5 w-3.5" />Add lookbook item</button>} />
+        actions={can(user.role, "lookbook", "create") && <button onClick={() => { setDirty(false); setEditing({ id: null, v: empty, preview: "" }); }} className={adminBtn}><Plus className="h-3.5 w-3.5" />Add lookbook item</button>} />
       <Panel title={`${items.length} items`}>
         {isError ? <AdminState icon="alert" title="Couldn't load the lookbook" body="Please refresh the page to try again." /> : isLoading ? <p className="p-5 text-sm text-muted-foreground">Loading…</p> : !items.length ? <p className="p-10 text-center text-sm text-muted-foreground">No lookbook items yet.</p> : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
             <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
               <ul className="divide-y divide-border">
                 {items.map((it) => <Row key={it.id} item={it} canArchive={canArchive}
-                  onEdit={() => setEditing({ id: it.id, v: { title: it.title ?? "", description: it.description ?? "", image_url: it.image_url, is_featured: it.is_featured, status: it.status as Status }, preview: it.preview ?? "" })}
+                  onEdit={() => { setDirty(false); setEditing({ id: it.id, v: { title: it.title ?? "", description: it.description ?? "", image_url: it.image_url, is_featured: it.is_featured, status: it.status as Status }, preview: it.preview ?? "" }); }}
                   onStatus={(s) => setPending({ item: it, status: s })} />)}
               </ul>
             </SortableContext>
@@ -76,18 +87,18 @@ function LookbookPage() {
         )}
       </Panel>
 
-      <Dialog open={!!editing} onOpenChange={(o) => !o && !saving && setEditing(null)}>
+      <Dialog open={!!editing} onOpenChange={(o) => !o && closeEditor()}>
         <DialogContent className="max-h-[90vh] overflow-y-auto font-sans">
           <DialogHeader><DialogTitle className="font-sans text-base">{editing?.id ? "Edit lookbook item" : "Add lookbook item"}</DialogTitle></DialogHeader>
           {editing && (
             <div className="space-y-4">
               <ImageField bucket="lookbook" folder="uploads" value={editing.v.image_url} preview={editing.preview} canUpload={can(user.role, "media", "upload")}
-                onChange={(url, p) => setEditing((e) => e && { ...e, v: { ...e.v, image_url: url }, preview: p })} />
-              <Field label="Title">{(f) => <input id={f} className={inputCls} value={editing.v.title} maxLength={120} onChange={(e) => setEditing((x) => x && { ...x, v: { ...x.v, title: e.target.value } })} />}</Field>
-              <Field label="Description">{(f) => <textarea id={f} rows={3} className={inputCls} value={editing.v.description} maxLength={1000} onChange={(e) => setEditing((x) => x && { ...x, v: { ...x.v, description: e.target.value } })} />}</Field>
-              <Check label="Featured" checked={editing.v.is_featured} onChange={(b) => setEditing((x) => x && { ...x, v: { ...x.v, is_featured: b } })} />
+                onChange={(url, p) => { setDirty(true); setEditing((e) => e && { ...e, v: { ...e.v, image_url: url }, preview: p }); }} />
+              <Field label="Title">{(f) => <input id={f} className={inputCls} value={editing.v.title} maxLength={120} onChange={(e) => { setDirty(true); setEditing((x) => x && { ...x, v: { ...x.v, title: e.target.value } }); }} />}</Field>
+              <Field label="Description">{(f) => <textarea id={f} rows={3} className={inputCls} value={editing.v.description} maxLength={1000} onChange={(e) => { setDirty(true); setEditing((x) => x && { ...x, v: { ...x.v, description: e.target.value } }); }} />}</Field>
+              <Check label="Featured" checked={editing.v.is_featured} onChange={(b) => { setDirty(true); setEditing((x) => x && { ...x, v: { ...x.v, is_featured: b } }); }} />
               <div className="flex flex-wrap justify-end gap-2 pt-2">
-                <button className={adminBtnGhost} disabled={saving} onClick={() => setEditing(null)}>Cancel</button>
+                <button className={adminBtnGhost} disabled={saving} onClick={closeEditor}>Cancel</button>
                 <button className={adminBtnGhost} disabled={saving} onClick={() => save(editing.v.status === "published" ? "draft" : editing.v.status)}>{saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}{editing.v.status === "published" ? "Save as draft (unpublish)" : "Save Draft"}</button>
                 <button className={adminBtn} disabled={saving} onClick={() => save("published")}>{saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}{editing.v.status === "published" ? "Save" : "Publish"}</button>
               </div>
