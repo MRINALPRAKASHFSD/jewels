@@ -364,16 +364,18 @@ export async function listMedia(bucket: Bucket | "all") {
 export async function findReferences(f: { bucket: string; path: string; url: string }) {
   const refs: string[] = [];
   const like = `%/${f.bucket}/${f.path}`;
-  const [imgs, cols, looks, home] = await Promise.all([
+  const [imgs, cols, looks, home, drafts] = await Promise.all([
     supabase.from("product_images").select("products(name)").or(`image_url.like.${like},storage_path.eq.${f.path}`).limit(20),
     supabase.from("collections").select("name").or(`hero_image_url.like.${like},banner_image_url.like.${like}`),
     supabase.from("lookbook_items").select("title").like("image_url", like),
     supabase.from("homepage_sections").select("section_key, content"),
+    supabase.from("homepage_drafts").select("section_key, content"),
   ]);
   if (f.bucket === "products") for (const r of (imgs.data ?? []) as any[]) refs.push(`Product: ${r.products?.name ?? "unknown"}`);
   for (const r of cols.data ?? []) refs.push(`Collection: ${r.name}`);
   for (const r of looks.data ?? []) refs.push(`Lookbook: ${r.title || "untitled"}`);
   for (const r of home.data ?? []) if (JSON.stringify(r.content).includes(`/${f.bucket}/${f.path}`)) refs.push(`Homepage: ${r.section_key}`);
+  for (const r of (drafts.data ?? []) as any[]) if (JSON.stringify(r.content).includes(`/${f.bucket}/${f.path}`)) refs.push(`Homepage draft: ${r.section_key}`);
   return refs;
 }
 
@@ -429,8 +431,11 @@ export async function enquiryTimeline(id: string) {
   return { notes: ok(notes, "Couldn't load notes.") ?? [], activity: (ok(activity, "Couldn't load activity.") ?? []) as Array<{ id: string; actor_email: string | null; details: any; created_at: string }> };
 }
 export async function addEnquiryNote(id: string, body: string, email: string) {
-  const { data } = await supabase.auth.getUser();
-  ok(await supabase.from("enquiry_notes").insert({ enquiry_id: id, body: body.trim(), author_email: email, author_id: data.user!.id }), "Couldn't save the note.");
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    friendly("You must be signed in to add an internal note.", error ?? new Error("No authenticated user"));
+  }
+  ok(await supabase.from("enquiry_notes").insert({ enquiry_id: id, body: body.trim(), author_email: email, author_id: data.user.id }), "Couldn't save the note.");
 }
 
 /* ---------------- recent activity (admins) ---------------- */
