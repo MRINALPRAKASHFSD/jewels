@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  BarChart3, Bell, BookOpen, FileText, Gem, Image, Inbox, Layers, LayoutDashboard, Loader2, Lock, LogOut, Menu, Settings, ShieldAlert, X,
+  BarChart3, Bell, BookOpen, FileText, Gem, Image, Inbox, Layers, LayoutDashboard, Loader2, Lock, LogOut, Menu, Settings, ShieldAlert, ShoppingBag, X,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,10 @@ const NAV: NavGroup[] = [
     { label: "Media library", to: "/admin/media", icon: Image, resource: "media" },
     { label: "Lookbook", to: "/admin/lookbook", icon: BookOpen, resource: "lookbook" },
   ] },
-  { label: "Customer", items: [{ label: "Enquiries", to: "/admin/enquiries", icon: Inbox, resource: "enquiries" }] },
+  { label: "Customer", items: [
+    { label: "Enquiries", to: "/admin/enquiries", icon: Inbox, resource: "enquiries" },
+    { label: "Orders", to: "/admin/orders", icon: ShoppingBag, resource: "orders" },
+  ] },
   { label: "Content", items: [{ label: "Homepage", to: "/admin/content", icon: FileText, resource: "content" }] },
   { items: [
     { label: "Analytics", to: "/admin/analytics", icon: BarChart3, resource: "analytics" },
@@ -33,7 +36,7 @@ const NAV: NavGroup[] = [
 
 const TITLES: [string, string][] = [
   ["/admin/products", "Products"], ["/admin/collections", "Collections"], ["/admin/media", "Media library"],
-  ["/admin/lookbook", "Lookbook"], ["/admin/enquiries", "Enquiries"], ["/admin/content", "Content"],
+  ["/admin/lookbook", "Lookbook"], ["/admin/enquiries", "Enquiries"], ["/admin/orders", "Orders"], ["/admin/content", "Content"],
   ["/admin/analytics", "Analytics"], ["/admin/settings", "Settings"], ["/admin/profile", "Profile"],
 ];
 function titleFor(path: string) { return TITLES.find(([p]) => path.startsWith(p))?.[1] ?? "Dashboard"; }

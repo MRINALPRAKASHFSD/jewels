@@ -5,7 +5,12 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createCashfreeOrder, getCashfreeOrderStatus, getCashfreePayments, extractPaymentMethod } from "./cashfree";
+import {
+  createCashfreeOrder,
+  getCashfreeOrderStatus,
+  getCashfreePayments,
+  extractPaymentMethod,
+} from "./cashfree";
 import {
   createOrder,
   attachCfOrderId,
@@ -35,9 +40,7 @@ export const initiateCheckout = createServerFn({ method: "POST" })
     const product = await getProductPrice(data.productId);
 
     if (product.priceOnRequest || product.price === null) {
-      throw new Error(
-        "This product is priced on request. Please use the enquiry form.",
-      );
+      throw new Error("This product is priced on request. Please use the enquiry form.");
     }
 
     const amount = product.price;
@@ -115,9 +118,7 @@ export const verifyPaymentStatus = createServerFn({ method: "POST" })
       let paymentMethod = "unknown";
       try {
         const payments = await getCashfreePayments(cfOrderId);
-        const successfulPayment = payments.find(
-          (p) => p.payment_status === "SUCCESS",
-        );
+        const successfulPayment = payments.find((p) => p.payment_status === "SUCCESS");
         if (successfulPayment) {
           paymentMethod = extractPaymentMethod(successfulPayment.payment_method);
         }

@@ -75,8 +75,8 @@ function CheckoutReturnPage() {
               <span className="font-medium text-foreground">
                 ₹{state.amount.toLocaleString("en-IN")}
               </span>{" "}
-              has been received. We'll send a confirmation to your email and
-              reach out within 24 hours to arrange delivery.
+              has been received. We'll send a confirmation to your email and reach out within 24
+              hours to arrange delivery.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
               Order reference: <span className="font-mono">{order_id}</span>
@@ -97,9 +97,8 @@ function CheckoutReturnPage() {
             <Loader2 className="mx-auto h-14 w-14 text-warning mb-6" strokeWidth={1.25} />
             <h1 className="font-display text-4xl">Payment pending</h1>
             <p className="mt-6 text-muted-foreground max-w-md mx-auto leading-relaxed">
-              Your payment is still being processed. If you've completed the UPI
-              or net banking flow, please wait a moment — we'll confirm by
-              email.
+              Your payment is still being processed. If you've completed the UPI or net banking
+              flow, please wait a moment — we'll confirm by email.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
               Order reference: <span className="font-mono">{order_id}</span>

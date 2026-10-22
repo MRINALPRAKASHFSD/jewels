@@ -130,6 +130,52 @@ export const settingsList = () => queryOptions({
   queryFn: async () => check(await supabase.from("site_settings").select("key, value, is_public, updated_at").order("key")) as any[],
 });
 
+export type AdminOrder = {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  amount: number;
+  currency: string;
+  orderStatus: string;
+  cfOrderId: string | null;
+  paymentStatus: string | null;
+  paymentMethod: string | null;
+  gatewayPaymentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export const ordersList = (status?: string) => queryOptions({
+  queryKey: ["admin", "orders", { status }],
+  queryFn: async (): Promise<AdminOrder[]> => {
+    let q = (supabase as any)
+      .from("orders")
+      .select("id, customer_name, customer_email, customer_phone, amount, currency, status, cf_order_id, created_at, updated_at, payments(status, payment_method, gateway_payment_id)")
+      .order("created_at", { ascending: false });
+    if (status) q = q.eq("status", status);
+    const rows = check(await q) as any[];
+    return (rows ?? []).map((r) => {
+      const p = Array.isArray(r.payments) ? r.payments[0] : r.payments;
+      return {
+        id: r.id,
+        customerName: r.customer_name,
+        customerEmail: r.customer_email,
+        customerPhone: r.customer_phone,
+        amount: Number(r.amount),
+        currency: r.currency,
+        orderStatus: r.status,
+        cfOrderId: r.cf_order_id,
+        paymentStatus: p?.status ?? null,
+        paymentMethod: p?.payment_method ?? null,
+        gatewayPaymentId: p?.gateway_payment_id ?? null,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      };
+    });
+  },
+});
+
 export function formatPrice(p: Pick<AdminProduct, "price" | "priceOnRequest">) {
   if (p.priceOnRequest || p.price == null) return "On request";
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Number(p.price));

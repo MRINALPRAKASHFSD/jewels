@@ -11,9 +11,7 @@ function serviceDb() {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_SERVICE_ROLE_KEY"];
   if (!url || !key) {
-    throw new Error(
-      "[orders] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
-    );
+    throw new Error("[orders] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   }
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -69,28 +67,21 @@ export async function createOrder(input: CreateOrderInput): Promise<string> {
       })),
     );
     if (itemsError) {
-      throw new Error(
-        `[orders] Failed to insert order items: ${itemsError.message}`,
-      );
+      throw new Error(`[orders] Failed to insert order items: ${itemsError.message}`);
     }
   }
 
   return order.id;
 }
 
-export async function attachCfOrderId(
-  orderId: string,
-  cfOrderId: string,
-): Promise<void> {
+export async function attachCfOrderId(orderId: string, cfOrderId: string): Promise<void> {
   const db = serviceDb();
   const { error } = await db
     .from("orders")
     .update({ cf_order_id: cfOrderId, status: "processing" })
     .eq("id", orderId);
   if (error) {
-    throw new Error(
-      `[orders] Failed to attach cf_order_id: ${error.message}`,
-    );
+    throw new Error(`[orders] Failed to attach cf_order_id: ${error.message}`);
   }
 }
 
@@ -99,14 +90,9 @@ export async function updateOrderStatus(
   status: "paid" | "failed" | "cancelled",
 ): Promise<void> {
   const db = serviceDb();
-  const { error } = await db
-    .from("orders")
-    .update({ status })
-    .eq("id", orderId);
+  const { error } = await db.from("orders").update({ status }).eq("id", orderId);
   if (error) {
-    throw new Error(
-      `[orders] Failed to update order status: ${error.message}`,
-    );
+    throw new Error(`[orders] Failed to update order status: ${error.message}`);
   }
 }
 
@@ -164,9 +150,7 @@ export async function getProductPrice(
     .eq("status", "published")
     .single();
   if (error || !data) {
-    throw new Error(
-      `[orders] Product not found or unpublished: ${productId}`,
-    );
+    throw new Error(`[orders] Product not found or unpublished: ${productId}`);
   }
   return {
     price: data.price,

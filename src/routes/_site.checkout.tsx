@@ -29,10 +29,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_site/checkout")({
   validateSearch: searchSchema,
   head: () => ({
-    meta: [
-      { title: "Secure Checkout — Élan Jewellery" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Secure Checkout — Élan Jewellery" }, { name: "robots", content: "noindex" }],
   }),
   component: CheckoutPage,
 });
@@ -40,9 +37,7 @@ export const Route = createFileRoute("/_site/checkout")({
 const formSchema = z.object({
   name: z.string().min(1, "Name is required").max(120),
   email: z.string().email("Please enter a valid email"),
-  phone: z
-    .string()
-    .regex(/^[6-9][0-9]{9}$/, "Please enter a valid 10-digit Indian mobile number"),
+  phone: z.string().regex(/^[6-9][0-9]{9}$/, "Please enter a valid 10-digit Indian mobile number"),
 });
 type FormData = z.infer<typeof formSchema>;
 
@@ -56,9 +51,7 @@ type CashfreeSDK = {
 
 async function loadCashfreeSDK(): Promise<CashfreeSDK> {
   const mode =
-    import.meta.env["VITE_CASHFREE_ENVIRONMENT"] === "production"
-      ? "production"
-      : "sandbox";
+    import.meta.env["VITE_CASHFREE_ENVIRONMENT"] === "production" ? "production" : "sandbox";
 
   // Dynamically import the Cashfree JS SDK (client side only)
   const { load } = await import("@cashfreepayments/cashfree-js");
@@ -76,8 +69,12 @@ function CheckoutPage() {
   // Preload the SDK on mount
   useEffect(() => {
     loadCashfreeSDK()
-      .then((sdk) => { sdkRef.current = sdk; })
-      .catch(() => { /* non-critical at this stage */ });
+      .then((sdk) => {
+        sdkRef.current = sdk;
+      })
+      .catch(() => {
+        /* non-critical at this stage */
+      });
   }, []);
 
   const {
@@ -150,17 +147,11 @@ function CheckoutPage() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_400px]">
           {/* ── Left: Form ─────────────────────────────── */}
           <Reveal>
-            <h1 className="font-display text-4xl sm:text-5xl mb-10">
-              Complete your order
-            </h1>
+            <h1 className="font-display text-4xl sm:text-5xl mb-10">Complete your order</h1>
 
             <CheckoutProductCard productId={productId} slug={slug} />
 
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="mt-12 space-y-7"
-              noValidate
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-7" noValidate>
               <div className="space-y-1.5">
                 <label htmlFor="checkout-name" className="eyebrow text-muted-foreground block">
                   Full name
@@ -175,9 +166,7 @@ function CheckoutPage() {
                   )}
                   {...register("name")}
                 />
-                {errors.name && (
-                  <p className="text-xs text-destructive">{errors.name.message}</p>
-                )}
+                {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -194,9 +183,7 @@ function CheckoutPage() {
                   )}
                   {...register("email")}
                 />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -220,9 +207,7 @@ function CheckoutPage() {
                     {...register("phone")}
                   />
                 </div>
-                {errors.phone && (
-                  <p className="text-xs text-destructive">{errors.phone.message}</p>
-                )}
+                {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
               </div>
 
               {error && (
@@ -271,16 +256,13 @@ function CheckoutProductCard({ productId, slug }: { productId: string; slug: str
   const img = p.images[0] ?? p.thumbnail;
   return (
     <div className="flex items-start gap-5 border border-border p-4">
-      {img && (
-        <img
-          src={img}
-          alt={p.name}
-          className="h-20 w-16 object-cover flex-shrink-0"
-        />
-      )}
+      {img && <img src={img} alt={p.name} className="h-20 w-16 object-cover flex-shrink-0" />}
       <div className="min-w-0">
         <p className="font-display text-xl leading-snug">{p.name}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{p.metal}{p.stone && p.stone !== "Other" ? ` · ${p.stone}` : ""}</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {p.metal}
+          {p.stone && p.stone !== "Other" ? ` · ${p.stone}` : ""}
+        </p>
         <p className="mt-2 text-base">{formatProductPrice(p)}</p>
       </div>
     </div>
@@ -331,8 +313,8 @@ function OrderSummary({ productId, slug }: { productId: string; slug: string }) 
 
       <div className="mt-8 border-t border-border pt-6">
         <p className="text-xs text-muted-foreground">
-          We accept UPI, Credit Cards, Debit Cards, and Net Banking via
-          Cashfree — a PCI-DSS compliant payment gateway.
+          We accept UPI, Credit Cards, Debit Cards, and Net Banking via Cashfree — a PCI-DSS
+          compliant payment gateway.
         </p>
       </div>
     </div>

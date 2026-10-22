@@ -19,9 +19,7 @@ function env(name: string): string {
 function getConfig() {
   const mode = (process.env["CASHFREE_ENVIRONMENT"] ?? "sandbox").toLowerCase();
   const baseUrl =
-    mode === "production"
-      ? "https://api.cashfree.com/pg"
-      : "https://sandbox.cashfree.com/pg";
+    mode === "production" ? "https://api.cashfree.com/pg" : "https://sandbox.cashfree.com/pg";
   return {
     appId: env("CASHFREE_APP_ID"),
     secretKey: env("CASHFREE_SECRET_KEY"),
@@ -35,7 +33,7 @@ function getConfig() {
 
 export type CashfreeOrderInput = {
   orderId: string;
-  amount: number;   // INR, server-derived — never from client input
+  amount: number; // INR, server-derived — never from client input
   currency?: string;
   customerName: string;
   customerEmail: string;
@@ -92,11 +90,7 @@ export type CashfreeWebhookPayload = {
 
 // ─── Internal fetch helper ───────────────────────────────────────────────────
 
-async function cfFetch<T>(
-  path: string,
-  method: "GET" | "POST",
-  body?: unknown,
-): Promise<T> {
+async function cfFetch<T>(path: string, method: "GET" | "POST", body?: unknown): Promise<T> {
   const cfg = getConfig();
   const res = await fetch(`${cfg.baseUrl}${path}`, {
     method,
@@ -157,9 +151,7 @@ export async function createCashfreeOrder(
   };
 }
 
-export async function getCashfreeOrderStatus(
-  cfOrderId: string,
-): Promise<CashfreeOrderStatus> {
+export async function getCashfreeOrderStatus(cfOrderId: string): Promise<CashfreeOrderStatus> {
   const data = await cfFetch<{
     order_id: string;
     order_status: string;
@@ -212,9 +204,7 @@ export function verifyCashfreeWebhook(
   }
 }
 
-export function extractPaymentMethod(
-  paymentMethod: Record<string, unknown>,
-): string {
+export function extractPaymentMethod(paymentMethod: Record<string, unknown>): string {
   if (!paymentMethod || typeof paymentMethod !== "object") return "unknown";
   const key = Object.keys(paymentMethod)[0] ?? "unknown";
   const map: Record<string, string> = {

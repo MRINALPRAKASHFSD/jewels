@@ -3,7 +3,7 @@
 export type AdminRole = "admin" | "editor";
 export type Resource =
   | "products" | "collections" | "media" | "lookbook" | "enquiries"
-  | "content" | "settings" | "analytics" | "users";
+  | "content" | "settings" | "analytics" | "users" | "orders";
 export type Action = "create" | "read" | "update" | "delete" | "upload";
 
 const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
@@ -17,6 +17,7 @@ const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
     settings: ["read", "update"],
     analytics: ["read"],
     users: ["create", "read", "update", "delete"], // future /admin/settings/users
+    orders: ["read", "update"],
   },
   editor: {
     products: ["create", "read", "update"],
@@ -26,6 +27,7 @@ const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
     enquiries: ["read", "update"],
     content: ["read", "update"],
     settings: ["read"],
+    orders: ["read"],
   },
 };
 
