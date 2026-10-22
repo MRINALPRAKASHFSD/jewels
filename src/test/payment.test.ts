@@ -251,3 +251,22 @@ describe("Payment Gateway — Client Bundle Secret Leak Audit", () => {
     expect(cashfreeContent).toContain("CASHFREE_SECRET_KEY");
   });
 });
+
+describe("Payment Gateway — Server-Side Canonical Product Lookup & Price Integrity", () => {
+  it("successfully retrieves canonical price for published product 03551aae-5cd8-4a56-9b4a-5f5691fd3297", async () => {
+    const { getProductPrice } = await import("../lib/payment/orders");
+    const result = await getProductPrice("03551aae-5cd8-4a56-9b4a-5f5691fd3297");
+    expect(result).toBeDefined();
+    expect(result.name).toBe("Heritage Jhumka");
+    expect(result.price).toBe(126000);
+    expect(result.priceOnRequest).toBe(false);
+  });
+
+  it("throws product not found or unpublished for non-existent product UUID", async () => {
+    const { getProductPrice } = await import("../lib/payment/orders");
+    const nonExistentId = "00000000-0000-0000-0000-000000000000";
+    await expect(getProductPrice(nonExistentId)).rejects.toThrow(
+      `[orders] Product not found or unpublished: ${nonExistentId}`,
+    );
+  });
+});

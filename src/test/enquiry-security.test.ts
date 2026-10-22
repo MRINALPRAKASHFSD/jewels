@@ -21,7 +21,8 @@ import {
 } from "@/lib/enquiry.server";
 
 const SUPABASE_URL = process.env["SUPABASE_URL"] || process.env["VITE_SUPABASE_URL"] || "";
-const SUPABASE_PUBLISHABLE_KEY = process.env["SUPABASE_PUBLISHABLE_KEY"] || process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || "";
+const SUPABASE_PUBLISHABLE_KEY =
+  process.env["SUPABASE_PUBLISHABLE_KEY"] || process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || "";
 const SUPABASE_SERVICE_ROLE_KEY = process.env["SUPABASE_SERVICE_ROLE_KEY"] || "";
 
 const anonClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -93,7 +94,7 @@ describe("Enquiry Security & Abuse Protection Suite", () => {
       );
 
       expect(res.ok).toBe(false);
-      expect(res.error).toBe("Invalid submission.");
+      expect((res as { ok: false; error: string }).error).toBe("Invalid submission.");
 
       // Verify no record was created in public.enquiries
       const { data } = await adminClient
@@ -295,10 +296,7 @@ describe("Enquiry Security & Abuse Protection Suite", () => {
       expect(dErr).toBeNull();
 
       // Verify row is deleted
-      const { data: deleted } = await adminClient
-        .from("enquiries")
-        .select("id")
-        .eq("id", testId);
+      const { data: deleted } = await adminClient.from("enquiries").select("id").eq("id", testId);
       expect(deleted?.length).toBe(0);
     });
   });

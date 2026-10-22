@@ -53,7 +53,8 @@ export const enquiryInputSchema = z
   .refine(
     (data) => (data.email && data.email.length > 0) || (data.phone && data.phone.length > 0),
     {
-      message: "Please provide either an email address or a phone number so our atelier can contact you.",
+      message:
+        "Please provide either an email address or a phone number so our atelier can contact you.",
       path: ["email"],
     },
   );
@@ -61,8 +62,7 @@ export const enquiryInputSchema = z
 export type EnquiryInput = z.infer<typeof enquiryInputSchema>;
 
 export type EnquirySubmissionResult =
-  | { ok: true; id: string; message: string }
-  | { ok: false; error: string; retryAfter?: number };
+  { ok: true; id: string; message: string } | { ok: false; error: string; retryAfter?: number };
 
 /**
  * Derives a privacy-conscious salted hash from the client IP and optional contact info.
@@ -72,10 +72,7 @@ export function computeAbuseKey(ip: string, contact?: string | null): string {
   const salt = process.env["ABUSE_KEY_SALT"] || "elan-jewels-enquiry-salt-v1";
   const cleanIp = ip.trim().toLowerCase();
   const cleanContact = contact ? contact.trim().toLowerCase() : "";
-  return crypto
-    .createHash("sha256")
-    .update(`${salt}:${cleanIp}:${cleanContact}`)
-    .digest("hex");
+  return crypto.createHash("sha256").update(`${salt}:${cleanIp}:${cleanContact}`).digest("hex");
 }
 
 /**
@@ -106,12 +103,17 @@ export async function checkEnquiryRateLimit(
     };
   }
 
-  const res = data as { allowed: boolean; reason?: "cooldown" | "rate_limit"; retry_after?: number };
-  return {
-    allowed: !!res?.allowed,
-    reason: res?.reason,
-    retryAfter: res?.retry_after,
+  const res = data as {
+    allowed: boolean;
+    reason?: "cooldown" | "rate_limit";
+    retry_after?: number;
   };
+  const result: { allowed: boolean; reason?: "cooldown" | "rate_limit"; retryAfter?: number } = {
+    allowed: !!res?.allowed,
+  };
+  if (res?.reason !== undefined) result.reason = res.reason;
+  if (res?.retry_after !== undefined) result.retryAfter = res.retry_after;
+  return result;
 }
 
 /**
@@ -142,10 +144,11 @@ export async function processEnquirySubmission(
       const { getRequest } = await import("@tanstack/react-start/server");
       const req = getRequest();
       const xForwarded = req?.headers?.get("x-forwarded-for");
-      ip = (xForwarded ? xForwarded.split(",")[0]?.trim() : null)
-        || req?.headers?.get("cf-connecting-ip")
-        || req?.headers?.get("x-real-ip")
-        || "127.0.0.1";
+      ip =
+        (xForwarded ? xForwarded.split(",")[0]?.trim() : null) ||
+        req?.headers?.get("cf-connecting-ip") ||
+        req?.headers?.get("x-real-ip") ||
+        "127.0.0.1";
     } catch {
       ip = "127.0.0.1";
     }
@@ -157,11 +160,13 @@ export async function processEnquirySubmission(
   // 5. Evaluate persistent rate limiting
   const rateLimitResult = await checkEnquiryRateLimit(abuseKey);
   if (!rateLimitResult.allowed) {
-    return {
+    const retryErr: { ok: false; error: string; retryAfter?: number } = {
       ok: false,
-      error: "You have submitted too many enquiries recently. Please wait a few minutes before trying again.",
-      retryAfter: rateLimitResult.retryAfter,
+      error:
+        "You have submitted too many enquiries recently. Please wait a few minutes before trying again.",
     };
+    if (rateLimitResult.retryAfter !== undefined) retryErr.retryAfter = rateLimitResult.retryAfter;
+    return retryErr;
   }
 
   // 6. Insert enquiry into public.enquiries via supabaseAdmin (service role)
@@ -185,7 +190,8 @@ export async function processEnquirySubmission(
     console.error("[enquiry.server] Insert error:", insertError);
     return {
       ok: false,
-      error: "We could not process your enquiry right now. Please try again or contact us directly on WhatsApp.",
+      error:
+        "We could not process your enquiry right now. Please try again or contact us directly on WhatsApp.",
     };
   }
 
