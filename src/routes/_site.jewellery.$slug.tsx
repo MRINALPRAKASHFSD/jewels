@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ProductCard, WishlistButton } from "@/components/site/cards";
 import { ProductGallery } from "@/components/site/ProductGallery";
-import { Container, Reveal, SectionHeading, luxButton } from "@/components/site/primitives";
+import { Container, LuxButton, Reveal, SectionHeading, luxButton } from "@/components/site/primitives";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatProductPrice, getCategoryLabel, getCollectionLabel, materialLine, productDetails, productLabel } from "@/data/catalog";
@@ -93,7 +93,22 @@ function ProductPage() {
                 <p className="mt-6 text-lg tabular-nums">{formatProductPrice(p)}</p>
                 <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-muted-foreground">{p.description}</p>
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-                  <WhatsAppButton productName={p.name} label="Enquire now" variant="primary" className="flex-1" />
+                  {/* Show "Buy now" only when there's a fixed price and the piece isn't sold out */}
+                  {!p.priceOnRequest && p.price !== null && p.availability !== "sold-out" ? (
+                    <Link
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      to={"/checkout" as any}
+                      search={{ productId: p.id, slug: p.slug } as never}
+                      className="flex-1"
+                    >
+                      <LuxButton variant="primary" className="w-full" id={`buy-now-${p.slug}`}>
+                        Buy now
+                      </LuxButton>
+                    </Link>
+                  ) : (
+                    <WhatsAppButton productName={p.name} label="Enquire now" variant="primary" className="flex-1" />
+                  )}
+                  <WhatsAppButton productName={p.name} label="Enquire" variant="secondary" className="flex-1" />
                   <WishlistButton productId={p.slug} label={p.name} withText className="flex-1" />
                 </div>
                 <p className="mt-4 text-xs text-muted-foreground">{p.availability === "made-to-order" ? "Made to order · 4–6 weeks" : "Ready to ship · Complimentary insured delivery"}</p>
