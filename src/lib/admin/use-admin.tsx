@@ -11,7 +11,15 @@ export function useAdminUser(): AdminUser {
 }
 
 /** Renders children only when the role allows it. Data-fetching children never mount otherwise. */
-export function RequireAccess({ resource, action = "read", children }: { resource: Resource; action?: Action; children: ReactNode }) {
+export function RequireAccess({
+  resource,
+  action = "read",
+  children,
+}: {
+  resource: Resource;
+  action?: Action;
+  children: ReactNode;
+}) {
   const user = useAdminUser();
   return can(user.role, resource, action) ? <>{children}</> : <AccessRestricted />;
 }

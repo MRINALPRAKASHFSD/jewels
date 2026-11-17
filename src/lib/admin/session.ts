@@ -25,9 +25,19 @@ export async function loadAdminSession(): Promise<AdminSession> {
   }
   if (!profile.data) return { status: "no-profile", email };
   const list = (roles.data ?? []).map((r) => r.role as string);
-  const role: AdminRole | null = list.includes("admin") ? "admin" : list.includes("editor") ? "editor" : null;
+  const role: AdminRole | null = list.includes("admin")
+    ? "admin"
+    : list.includes("editor")
+      ? "editor"
+      : null;
   if (!role) return { status: "forbidden", email };
-  return { status: "ok", userId: user.id, email, name: profile.data.full_name || email.split("@")[0]!, role };
+  return {
+    status: "ok",
+    userId: user.id,
+    email,
+    name: profile.data.full_name || email.split("@")[0]!,
+    role,
+  };
 }
 
 /** Only allow same-origin admin paths as post-login destinations. */
@@ -35,7 +45,12 @@ export function safeAdminRedirect(target: unknown): string {
   if (typeof target !== "string") return "/admin";
   try {
     const u = new URL(target, "http://x");
-    if (u.origin !== "http://x" || !u.pathname.startsWith("/admin") || u.pathname.startsWith("/admin/login")) return "/admin";
+    if (
+      u.origin !== "http://x" ||
+      !u.pathname.startsWith("/admin") ||
+      u.pathname.startsWith("/admin/login")
+    )
+      return "/admin";
     return u.pathname + u.search;
   } catch {
     return "/admin";

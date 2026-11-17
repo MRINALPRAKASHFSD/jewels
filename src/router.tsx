@@ -12,7 +12,9 @@ export const getRouter = () => {
     defaultPreloadStaleTime: 0,
     // Hand server-loaded query data to the browser so pages don't refetch (or re-sign image URLs) on hydration.
     dehydrate: () => ({ queryClientState: JSON.stringify(dehydrate(queryClient)) }),
-    hydrate: (data: { queryClientState: string }) => { hydrate(queryClient, JSON.parse(data.queryClientState)); },
+    hydrate: (data: { queryClientState: string }) => {
+      hydrate(queryClient, JSON.parse(data.queryClientState));
+    },
   });
 
   return router;

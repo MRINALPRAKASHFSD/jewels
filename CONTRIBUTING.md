@@ -1,139 +1,95 @@
 # Contributing to Élan Fine Jewellery
 
-Thank you for your interest in contributing to the Élan Fine Jewellery platform. This document outlines the standards and workflow for all contributors.
+Thank you for contributing to Élan Fine Jewellery. This guide covers the local setup, branch naming, and review workflow.
 
----
+## Code of conduct
 
-## Code of Conduct
+Contributors are expected to keep discussions respectful and constructive. Harassment, discrimination, or disruptive behavior will not be tolerated.
 
-All contributors are expected to maintain a respectful and professional environment. Harassment, discrimination, or disruptive behavior of any kind will not be tolerated.
+## Getting started
 
----
-
-## Getting Started
-
-1. **Fork** the repository on GitHub
-2. **Clone** your fork locally:
+1. Fork the repository on GitHub.
+2. Clone your fork locally:
    ```bash
    git clone https://github.com/<your-username>/jewels.git
    cd jewels
    ```
-3. **Install** dependencies:
+3. Install dependencies:
    ```bash
    bun install
    ```
-4. **Configure** environment variables (see [`README.md`](./README.md#environment-variables))
-5. **Create** a feature branch:
+4. Copy `.env.example` to `.env` and fill in the required variables (see [`README.md`](./README.md#environment-variables)).
+5. Create a branch for your work:
    ```bash
    git checkout -b feat/your-feature-name
    ```
 
----
+## Branch naming
 
-## Branch Naming Convention
+| Prefix      | Purpose                                 | Example                       |
+| ----------- | --------------------------------------- | ----------------------------- |
+| `feat/`     | New feature                             | `feat/product-image-carousel` |
+| `fix/`      | Bug fix                                 | `fix/wishlist-persistence`    |
+| `refactor/` | Code restructuring (no behavior change) | `refactor/catalog-queries`    |
+| `docs/`     | Documentation updates                   | `docs/api-reference`          |
+| `test/`     | Adding or updating tests                | `test/admin-auth-flow`        |
+| `chore/`    | Build scripts, tooling, dependencies    | `chore/upgrade-tailwind`      |
 
-| Prefix       | Purpose                          | Example                        |
-|--------------|----------------------------------|--------------------------------|
-| `feat/`      | New feature                      | `feat/product-image-carousel`  |
-| `fix/`       | Bug fix                          | `fix/wishlist-persistence`     |
-| `refactor/`  | Code refactoring (no behavior change) | `refactor/catalog-queries` |
-| `docs/`      | Documentation only               | `docs/api-reference`           |
-| `test/`      | Adding or fixing tests           | `test/admin-auth-flow`         |
-| `chore/`     | Build scripts, tooling, deps     | `chore/upgrade-tailwind`       |
+## Commit messages
 
----
+Write clear, human-readable commit messages using [Conventional Commits](https://www.conventionalcommits.org/) prefixes:
 
-## Commit Message Format
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
+```text
 <type>(<scope>): <short summary>
 
-[optional body]
-
-[optional footer]
+[optional body explaining why the change was made]
 ```
 
-### Types
-
-- `feat` — A new feature
-- `fix` — A bug fix
-- `docs` — Documentation changes
-- `style` — Formatting (no logic changes)
-- `refactor` — Code restructuring
-- `test` — Test additions/modifications
-- `chore` — Maintenance tasks
+Supported types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, and `security`.
 
 ### Examples
 
-```
+```text
 feat(catalogue): add faceted filtering by material type
-fix(admin): resolve session persistence after token refresh
-docs(readme): update environment variable instructions
+fix(admin): keep session active after token refresh
+docs(readme): document Cashfree environment variables
 chore(deps): upgrade @tanstack/react-query to 5.101
 ```
 
----
+## Pull request checklist
 
-## Pull Request Guidelines
-
-- All PRs must target the `main` branch
-- Include a clear description of **what** changed and **why**
-- Reference any related issues with `Fixes #<issue-number>`
-- Ensure all tests pass before requesting review:
+- Target the `main` branch.
+- Describe what changed and why, and reference any related issue (`Fixes #<issue-number>`).
+- Run tests, typecheck, and formatting before requesting review:
   ```bash
   bun test
-  ```
-- Ensure the code is formatted:
-  ```bash
+  bun x tsc --noEmit
   bun format
   ```
-- At least **one review approval** is required before merging
-- Squash commits on merge is preferred for a clean history
+- Avoid rewriting published git history on branches connected to Lovable.
 
----
+## Code conventions
 
-## Code Style
+- TypeScript strict mode is enabled (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`). Avoid `any` casts when generated types are available.
+- Format with Prettier (`bun format`) and lint with ESLint (`bun lint`).
+- Reuse public UI primitives from `src/components/site/primitives.tsx` and admin components from `src/components/admin/AdminUI.tsx`.
+- Keep catalogue filtering inside `src/data/catalog.ts` and `src/lib/catalog.functions.ts` rather than filtering raw arrays in components.
+- Never hardcode secrets or expose server keys with a `VITE_` prefix.
 
-- **TypeScript** — Strict mode enabled; avoid `any` types
-- **Formatting** — Prettier is configured; run `bun format` before committing
-- **Linting** — ESLint is configured; run `bun lint` to check
-- **Components** — Follow patterns in `src/components/site/primitives.tsx` (public) and `src/components/admin/AdminUI.tsx` (admin)
-- **Data** — Never filter raw arrays in UI; use helpers from `src/data/catalog.ts`
-- **No hardcoded secrets** — All credentials via environment variables
+## Architecture notes
 
----
+Read [`AGENTS.md`](./AGENTS.md) before making structural changes:
 
-## Architecture Decisions
+- Public routes live under `_site`; admin routes live under `/admin` with `loadAdminSession` in `src/lib/admin/session.ts`.
+- Mock and fallback content lives in `src/data/`.
+- Catalogue filters stay in URL search params on `/jewellery`.
 
-Before making structural changes, read the architecture notes in [`AGENTS.md`](./AGENTS.md). Key rules:
+## Reporting issues
 
-- Public pages → `_site` layout
-- Admin pages → `/admin` layout with auth guard
-- All mock/content data → `src/data/` directory
-- Catalogue filters → URL search params only
-- Admin auth → `src/lib/admin/session.ts`
-
----
-
-## Reporting Issues
-
-Use GitHub Issues with one of the following labels:
-
-- `bug` — Something is broken
-- `enhancement` — Feature request
-- `documentation` — Docs improvement
-- `question` — General inquiry
-
-Please include steps to reproduce, expected vs actual behavior, and environment details.
-
----
+Open a GitHub issue with steps to reproduce, expected vs. actual behavior, and your environment details. Use `bug`, `enhancement`, `documentation`, or `question` labels as appropriate.
 
 ## Copyright
 
-All contributions to this repository become the property of **Mrinal Prakash** under the terms of the [LICENSE](./LICENSE). By submitting a pull request, you agree to these terms.
+Contributions to this repository become the property of **Mrinal Prakash** under the terms of the [LICENSE](./LICENSE). By submitting a pull request, you agree to these terms.
 
----
-
-*Élan Fine Jewellery — Copyright © 2026 Mrinal Prakash. All rights reserved.*
+_Élan Fine Jewellery · Copyright © 2026 Mrinal Prakash. All rights reserved._

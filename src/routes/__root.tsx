@@ -80,7 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Élan — Fine Jewellery" },
-      { name: "description", content: "Élan is a house of fine jewellery — modern Indian elegance." },
+      {
+        name: "description",
+        content: "Élan is a house of fine jewellery — modern Indian elegance.",
+      },
       { name: "author", content: "Élan" },
       { property: "og:title", content: "Élan — Fine Jewellery" },
       { property: "og:description", content: "Modern Indian elegance in gold, diamond and pearl." },
@@ -90,7 +93,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,

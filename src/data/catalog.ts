@@ -1,10 +1,12 @@
 // Catalogue types, filter/sort configuration and pure display helpers.
 // Data itself lives in the database — see src/lib/catalog.functions.ts.
 
-export type CategorySlug = "rings" | "necklaces" | "earrings" | "bracelets" | "bangles" | "pendants" | "bridal" | "mens";
+export type CategorySlug =
+  "rings" | "necklaces" | "earrings" | "bracelets" | "bangles" | "pendants" | "bridal" | "mens";
 export type Metal = "18K Gold" | "22K Gold" | "Platinum" | "Rose Gold" | "White Gold";
 export type Stone = "Diamond" | "Emerald" | "Ruby" | "Sapphire" | "Pearl" | "Other";
-export type Occasion = "Everyday" | "Bridal" | "Anniversary" | "Engagement" | "Statement" | "Gifting";
+export type Occasion =
+  "Everyday" | "Bridal" | "Anniversary" | "Engagement" | "Statement" | "Gifting";
 export type Availability = "in-stock" | "made-to-order" | "sold-out";
 
 /** Fields a ProductCard needs (listing queries fetch only these). */
@@ -40,7 +42,15 @@ export type CatalogProduct = ProductSummary & {
   tags: string[];
 };
 
-export type CollectionItem = { id: string; slug: string; name: string; tagline: string; description: string; image?: string | undefined; pieces: number };
+export type CollectionItem = {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  image?: string | undefined;
+  pieces: number;
+};
 export type LookbookItem = { id: string; title: string; image: string };
 
 // "All" and "New Arrivals" are frontend concepts; the rest mirror the categories table.
@@ -66,7 +76,14 @@ export const collectionOptions = [
 export const filterConfig = {
   metal: ["18K Gold", "22K Gold", "Platinum", "Rose Gold", "White Gold"] as Metal[],
   stone: ["Diamond", "Emerald", "Ruby", "Sapphire", "Pearl", "Other"] as Stone[],
-  occasion: ["Everyday", "Bridal", "Anniversary", "Engagement", "Statement", "Gifting"] as Occasion[],
+  occasion: [
+    "Everyday",
+    "Bridal",
+    "Anniversary",
+    "Engagement",
+    "Statement",
+    "Gifting",
+  ] as Occasion[],
   price: [
     { id: "u25", label: "Under ₹25,000", min: 0, max: 25000 },
     { id: "25-50", label: "₹25,000 – ₹50,000", min: 25000, max: 50000 },
@@ -103,11 +120,16 @@ export type CatalogFilters = {
 /* ---------- Display helpers ---------- */
 
 type Priced = Pick<ProductSummary, "price">;
-export const getCategoryLabel = (slug: string) => categories.find((c) => c.slug === slug)?.label ?? slug;
-export const getCollectionLabel = (slug: string) => collectionOptions.find((c) => c.slug === slug)?.label ?? slug;
-export const materialLine = (p: Pick<ProductSummary, "metal" | "stone">) => (!p.stone || p.stone === "Other" ? p.metal : `${p.metal} · ${p.stone}`);
-export const formatProductPrice = (p: Priced) => (p.price === null ? "Price on Request" : "₹" + p.price.toLocaleString("en-IN"));
-export const productLabel = (p: Pick<ProductSummary, "isLimited" | "isNew" | "isBestseller">) => (p.isLimited ? "Limited" : p.isNew ? "New" : p.isBestseller ? "Bestseller" : undefined);
+export const getCategoryLabel = (slug: string) =>
+  categories.find((c) => c.slug === slug)?.label ?? slug;
+export const getCollectionLabel = (slug: string) =>
+  collectionOptions.find((c) => c.slug === slug)?.label ?? slug;
+export const materialLine = (p: Pick<ProductSummary, "metal" | "stone">) =>
+  !p.stone || p.stone === "Other" ? p.metal : `${p.metal} · ${p.stone}`;
+export const formatProductPrice = (p: Priced) =>
+  p.price === null ? "Price on Request" : "₹" + p.price.toLocaleString("en-IN");
+export const productLabel = (p: Pick<ProductSummary, "isLimited" | "isNew" | "isBestseller">) =>
+  p.isLimited ? "Limited" : p.isNew ? "New" : p.isBestseller ? "Bestseller" : undefined;
 
 export const productDetails = (p: CatalogProduct) => [
   { label: "Metal", value: p.metal },
@@ -115,5 +137,13 @@ export const productDetails = (p: CatalogProduct) => [
   { label: "Weight", value: p.weight },
   { label: "Dimensions", value: p.dimensions },
   { label: "Certification", value: p.certification },
-  { label: "Availability", value: p.availability === "made-to-order" ? "Made to order · 4–6 weeks" : p.availability === "sold-out" ? "Currently unavailable" : "Ready to ship" },
+  {
+    label: "Availability",
+    value:
+      p.availability === "made-to-order"
+        ? "Made to order · 4–6 weeks"
+        : p.availability === "sold-out"
+          ? "Currently unavailable"
+          : "Ready to ship",
+  },
 ];

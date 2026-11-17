@@ -6,8 +6,8 @@ Thank you to everyone who has contributed to the Élan Fine Jewellery platform.
 
 ## Core Team
 
-| Name | Role | GitHub |
-|------|------|--------|
+| Name               | Role                    | GitHub                                                   |
+| ------------------ | ----------------------- | -------------------------------------------------------- |
 | **Mrinal Prakash** | Founder & Lead Engineer | [@MRINALPRAKASHFSD](https://github.com/MRINALPRAKASHFSD) |
 
 ---
@@ -18,4 +18,4 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for guidelines on contributing to thi
 
 ---
 
-*Copyright © 2026 Mrinal Prakash. All rights reserved.*
+_Copyright © 2026 Mrinal Prakash. All rights reserved._

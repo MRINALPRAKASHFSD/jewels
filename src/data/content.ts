@@ -18,8 +18,16 @@ export const media = {
 };
 
 export const homeCopy = {
-  hero: { eyebrow: "The Art of Elegance", headline: "Jewellery designed to become part of your story.", cta: "Explore Collection", secondary: "Discover our story" },
-  collections: { eyebrow: "The Collections", title: "Pieces created for moments worth remembering." },
+  hero: {
+    eyebrow: "The Art of Elegance",
+    headline: "Jewellery designed to become part of your story.",
+    cta: "Explore Collection",
+    secondary: "Discover our story",
+  },
+  collections: {
+    eyebrow: "The Collections",
+    title: "Pieces created for moments worth remembering.",
+  },
   signature: { eyebrow: "Signature Pieces", title: "A study in proportion, light and detail." },
   story: {
     eyebrow: "Our Story",
@@ -31,10 +39,30 @@ export const homeCopy = {
     eyebrow: "Craftsmanship",
     title: "Where every detail has a purpose.",
     steps: [
-      { n: "01", title: "Design", text: "Every piece begins as a hand drawing, refined until each line feels inevitable.", key: "design" },
-      { n: "02", title: "Selection", text: "Stones are chosen one at a time for light, colour and character.", key: "selection" },
-      { n: "03", title: "Craft", text: "A single karigar shapes, sets and assembles each piece by hand.", key: "craft" },
-      { n: "04", title: "Finish", text: "Polished, inspected and hallmarked before it leaves the atelier.", key: "finish" },
+      {
+        n: "01",
+        title: "Design",
+        text: "Every piece begins as a hand drawing, refined until each line feels inevitable.",
+        key: "design",
+      },
+      {
+        n: "02",
+        title: "Selection",
+        text: "Stones are chosen one at a time for light, colour and character.",
+        key: "selection",
+      },
+      {
+        n: "03",
+        title: "Craft",
+        text: "A single karigar shapes, sets and assembles each piece by hand.",
+        key: "craft",
+      },
+      {
+        n: "04",
+        title: "Finish",
+        text: "Polished, inspected and hallmarked before it leaves the atelier.",
+        key: "finish",
+      },
     ] as const,
   },
   lookbook: { eyebrow: "The Lookbook", title: "Stories told in light, form and detail." },
@@ -42,7 +70,8 @@ export const homeCopy = {
     eyebrow: "Private Appointments",
     title: "Find your piece",
     body: "Discover the jewellery that belongs to your story.",
-    details: "Visit the atelier by appointment, or speak with us directly — we reply personally, usually within the hour.",
+    details:
+      "Visit the atelier by appointment, or speak with us directly — we reply personally, usually within the hour.",
     cta: "Book an Appointment",
   },
 };
@@ -50,7 +79,8 @@ export const homeCopy = {
 // WhatsApp message templates. The number itself lives in site_settings (key: whatsapp_number).
 export const whatsapp = {
   defaultMessage: "Hello, I would like to enquire about your jewellery collection.",
-  productMessage: (name: string) => `Hello, I am interested in the ${name}. Could you please share more details?`,
+  productMessage: (name: string) =>
+    `Hello, I am interested in the ${name}. Could you please share more details?`,
 };
 
 export function whatsappLink(number: string, productName?: string) {

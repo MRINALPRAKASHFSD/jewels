@@ -5,9 +5,15 @@ export const Route = createFileRoute("/_site/about")({
   head: () => ({
     meta: [
       { title: "About — Élan Fine Jewellery" },
-      { name: "description", content: "A house of fine jewellery rooted in Indian craft and modern restraint." },
+      {
+        name: "description",
+        content: "A house of fine jewellery rooted in Indian craft and modern restraint.",
+      },
       { property: "og:title", content: "About — Élan Fine Jewellery" },
-      { property: "og:description", content: "A house of fine jewellery rooted in Indian craft and modern restraint." },
+      {
+        property: "og:description",
+        content: "A house of fine jewellery rooted in Indian craft and modern restraint.",
+      },
     ],
   }),
   component: Page,
@@ -15,7 +21,11 @@ export const Route = createFileRoute("/_site/about")({
 
 function Page() {
   return (
-    <PageHeader eyebrow="About" title="Our Story" intro="A house of fine jewellery rooted in Indian craft and modern restraint.">
+    <PageHeader
+      eyebrow="About"
+      title="Our Story"
+      intro="A house of fine jewellery rooted in Indian craft and modern restraint."
+    >
       <ComingSoon note="The full story arrives soon" />
     </PageHeader>
   );

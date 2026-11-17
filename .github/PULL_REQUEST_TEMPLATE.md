@@ -1,43 +1,40 @@
 ## Summary
 
-<!-- Provide a concise description of the changes in this PR. -->
+<!-- Describe what this PR changes and why. -->
 
-## Type of Change
+## Type of change
 
-- [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
-- [ ] ✨ New feature (non-breaking change that adds functionality)
-- [ ] 💥 Breaking change (fix or feature that changes existing behavior)
-- [ ] 📚 Documentation update
-- [ ] ♻️ Refactor (no behavioral changes)
-- [ ] 🧪 Test addition or update
-- [ ] 🔧 Chore / tooling
+- [ ] Bug fix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] Breaking change (fix or feature that changes existing behavior)
+- [ ] Documentation update
+- [ ] Refactor (no behavioral changes)
+- [ ] Test addition or update
+- [ ] Chore or tooling update
 
-## Related Issues
+## Related issues
 
-<!-- Reference related issues: Fixes #123, Closes #456 -->
+<!-- Reference related issues, e.g. Fixes #123 -->
 
-## Changes Made
+## Changes made
 
-<!-- List the key changes in bullet points: -->
-- 
-- 
-- 
+-
+-
 
-## Testing
+## Verification
 
-- [ ] I have added tests that prove my fix/feature works
-- [ ] All existing tests pass (`bun test`)
-- [ ] Code is formatted (`bun format`)
-- [ ] No new lint errors (`bun lint`)
+- [ ] Added or updated tests covering the change
+- [ ] Existing tests pass (`bun test`)
+- [ ] Code is formatted (`bun format`) and lints cleanly (`bun lint`)
+- [ ] TypeScript compiles without errors (`bun x tsc --noEmit`)
 
 ## Screenshots (if applicable)
 
-<!-- Before/After screenshots for UI changes -->
+<!-- Attach before/after screenshots for UI changes -->
 
 ## Checklist
 
-- [ ] My code follows the project's architecture guidelines ([AGENTS.md](../AGENTS.md))
-- [ ] I have updated relevant documentation
+- [ ] Follows the project architecture notes in [AGENTS.md](../AGENTS.md)
+- [ ] Updated relevant documentation
 - [ ] No `.env` files or secrets are included
-- [ ] No references to third-party development tools have been added
-- [ ] I have reviewed my own diff before requesting review
+- [ ] Reviewed the diff before requesting review

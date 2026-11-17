@@ -1,37 +1,30 @@
 # Changelog
 
-All notable changes to the Élan Fine Jewellery platform are documented here.
+Notable changes to the Élan Fine Jewellery platform are recorded in this file.
 
-This project follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
----
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
-- Initial public release of the Élan Fine Jewellery platform
-- Public catalogue with filterable and searchable product listings
-- Product detail pages with image gallery and WhatsApp enquiry
-- Lookbook editorial pages
-- Client-side wishlist with localStorage persistence
-- Admin panel with full CRUD for products, collections, lookbook, media
-- Admin enquiry management with status workflow
-- Admin content management for homepage sections
-- Admin analytics dashboard
-- Supabase authentication and Row-Level Security
-- Database audit logging via triggers
-- TanStack Start SSR with TanStack Router
-- Tailwind CSS v4 design system
-- Full TypeScript strict mode
 
----
+- Cashfree payment gateway integration (UPI, credit/debit cards, and net banking) with server-side price verification
+- Public `/checkout` and `/checkout/return` routes plus `POST /api/webhook/cashfree` HMAC-SHA256 webhook handler
+- Admin `/admin/orders` view for tracking customer orders and payment statuses
+- Server-side enquiry rate limiting, cooldown enforcement, and honeypot validation (`public.enquiry_rate_limits`)
+- GitHub Actions CI workflow for linting, testing, and TypeScript checks
+- Local mock catalogue fallback when the database is unreachable in development
+- Initial storefront catalogue, collections, lookbook, client-side wishlist, and admin CMS panel
 
-## Version History
+### Security
 
-| Version | Date | Notes |
-|---------|------|-------|
-| 0.1.0 | 2026-05-19 | Initial release |
+- Enforced `security_invoker = true` and revoked anonymous access on `public.admin_orders`
+- Restricted Supabase storage buckets (`products`, `collections`, `lookbook`) to private signed URLs with `private.is_staff` write policies
 
----
+## Version history
 
-*Copyright © 2026 Mrinal Prakash. All rights reserved.*
+| Version | Date       | Notes           |
+| ------- | ---------- | --------------- |
+| 0.1.0   | 2026-05-19 | Initial release |
+
+_Copyright © 2026 Mrinal Prakash. All rights reserved._

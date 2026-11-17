@@ -106,14 +106,22 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  ::selection { background: var(--champagne); color: var(--espresso); }
+  ::selection {
+    background: var(--champagne);
+    color: var(--espresso);
+  }
 }
 
 @utility font-display {
@@ -149,7 +157,8 @@
     transform-origin: right;
     transition: transform 500ms var(--ease-lux);
   }
-  &:hover::after, &[data-status="active"]::after {
+  &:hover::after,
+  &[data-status="active"]::after {
     transform: scaleX(1);
     transform-origin: left;
   }
@@ -162,5 +171,7 @@
 
 @utility no-scrollbar {
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

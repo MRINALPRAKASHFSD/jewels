@@ -13,9 +13,15 @@ export const Route = createFileRoute("/_site/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Élan Fine Jewellery" },
-      { name: "description", content: "Book a private appointment or send an enquiry to the Élan atelier." },
+      {
+        name: "description",
+        content: "Book a private appointment or send an enquiry to the Élan atelier.",
+      },
       { property: "og:title", content: "Contact — Élan Fine Jewellery" },
-      { property: "og:description", content: "Book a private appointment or send an enquiry to the Élan atelier." },
+      {
+        property: "og:description",
+        content: "Book a private appointment or send an enquiry to the Élan atelier.",
+      },
     ],
   }),
   component: ContactPage,
@@ -74,7 +80,9 @@ function ContactPage() {
       }
     } catch (err: unknown) {
       console.error("[contact] Submission error:", err);
-      setError("We could not process your enquiry right now. Please try again or reach out on WhatsApp.");
+      setError(
+        "We could not process your enquiry right now. Please try again or reach out on WhatsApp.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -93,7 +101,9 @@ function ContactPage() {
             {success ? (
               <div className="border border-champagne/30 bg-espresso/30 p-8 sm:p-10">
                 <p className="eyebrow text-champagne mb-3">Enquiry Received</p>
-                <h3 className="font-display text-2xl sm:text-3xl text-foreground mb-4">Thank you</h3>
+                <h3 className="font-display text-2xl sm:text-3xl text-foreground mb-4">
+                  Thank you
+                </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{success}</p>
                 <button
                   type="button"
@@ -129,7 +139,10 @@ function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="enquiry-name" className="block eyebrow text-xs mb-2 text-muted-foreground">
+                  <label
+                    htmlFor="enquiry-name"
+                    className="block eyebrow text-xs mb-2 text-muted-foreground"
+                  >
                     Your Name <span className="text-foreground">*</span>
                   </label>
                   <input
@@ -147,7 +160,10 @@ function ContactPage() {
 
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="enquiry-email" className="block eyebrow text-xs mb-2 text-muted-foreground">
+                    <label
+                      htmlFor="enquiry-email"
+                      className="block eyebrow text-xs mb-2 text-muted-foreground"
+                    >
                       Email Address
                     </label>
                     <input
@@ -163,7 +179,10 @@ function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="enquiry-phone" className="block eyebrow text-xs mb-2 text-muted-foreground">
+                    <label
+                      htmlFor="enquiry-phone"
+                      className="block eyebrow text-xs mb-2 text-muted-foreground"
+                    >
                       Phone Number
                     </label>
                     <input
@@ -184,7 +203,10 @@ function ContactPage() {
                 </p>
 
                 <div>
-                  <label htmlFor="enquiry-message" className="block eyebrow text-xs mb-2 text-muted-foreground">
+                  <label
+                    htmlFor="enquiry-message"
+                    className="block eyebrow text-xs mb-2 text-muted-foreground"
+                  >
                     Message
                   </label>
                   <textarea
@@ -214,16 +236,22 @@ function ContactPage() {
           <Reveal delay={0.15} className="lg:col-span-5 lg:pl-6 space-y-10">
             <div className="border-t border-border pt-8 lg:border-t-0 lg:pt-0">
               <p className="eyebrow text-muted-foreground mb-3">Direct Atelier Access</p>
-              <h3 className="font-display text-2xl sm:text-3xl text-foreground mb-4">Prefer WhatsApp?</h3>
+              <h3 className="font-display text-2xl sm:text-3xl text-foreground mb-4">
+                Prefer WhatsApp?
+              </h3>
               <p className="text-sm leading-relaxed text-muted-foreground mb-6">
-                Our advisors reply directly to WhatsApp enquiries for rapid sizing advice, stone availability, and private consultation requests.
+                Our advisors reply directly to WhatsApp enquiries for rapid sizing advice, stone
+                availability, and private consultation requests.
               </p>
               <WhatsAppButton variant="secondary" />
             </div>
 
             <div className="border-t border-border pt-8 space-y-4 text-xs text-muted-foreground leading-relaxed">
               <p className="eyebrow text-foreground">Private Consultations</p>
-              <p>Appointments are held by prior arrangement at the atelier. Bespoke commissions typically require 4–6 weeks from design approval.</p>
+              <p>
+                Appointments are held by prior arrangement at the atelier. Bespoke commissions
+                typically require 4–6 weeks from design approval.
+              </p>
               <p className="text-foreground/70">Response time: Usually within 2 business hours.</p>
             </div>
           </Reveal>

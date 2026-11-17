@@ -11,9 +11,11 @@ export const luxButton = cva(
     variants: {
       variant: {
         primary: "bg-primary text-primary-foreground hover:bg-primary/85 h-11 px-7",
-        secondary: "border border-foreground/30 text-foreground hover:border-foreground hover:bg-foreground hover:text-background h-11 px-7",
+        secondary:
+          "border border-foreground/30 text-foreground hover:border-foreground hover:bg-foreground hover:text-background h-11 px-7",
         tertiary: "link-underline text-foreground h-auto px-0 pb-1",
-        ghostLight: "border border-ivory/50 text-ivory hover:bg-ivory hover:text-espresso h-11 px-7",
+        ghostLight:
+          "border border-ivory/50 text-ivory hover:bg-ivory hover:text-espresso h-11 px-7",
       },
     },
     defaultVariants: { variant: "primary" },
@@ -21,26 +23,55 @@ export const luxButton = cva(
 );
 export type LuxButtonProps = VariantProps<typeof luxButton>;
 
-export const LuxButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & LuxButtonProps>(
-  ({ className, variant, ...props }, ref) => <button ref={ref} className={cn(luxButton({ variant }), className)} {...props} />,
-);
+export const LuxButton = forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & LuxButtonProps
+>(({ className, variant, ...props }, ref) => (
+  <button ref={ref} className={cn(luxButton({ variant }), className)} {...props} />
+));
 LuxButton.displayName = "LuxButton";
 
 export function Container({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14", className)}>{children}</div>;
+  return (
+    <div className={cn("mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14", className)}>
+      {children}
+    </div>
+  );
 }
 
-export function SectionHeading({ eyebrow, title, intro, align = "left", className }: { eyebrow?: string; title: ReactNode; intro?: string; align?: "left" | "center"; className?: string }) {
+export function SectionHeading({
+  eyebrow,
+  title,
+  intro,
+  align = "left",
+  className,
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  intro?: string;
+  align?: "left" | "center";
+  className?: string;
+}) {
   return (
     <Reveal className={cn("max-w-2xl", align === "center" && "mx-auto text-center", className)}>
       {eyebrow && <p className="eyebrow mb-5 text-muted-foreground">{eyebrow}</p>}
       <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl">{title}</h2>
-      {intro && <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-muted-foreground">{intro}</p>}
+      {intro && (
+        <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-muted-foreground">
+          {intro}
+        </p>
+      )}
     </Reveal>
   );
 }
 
-export function Reveal({ children, delay = 0, y = 24, className, ...rest }: HTMLMotionProps<"div"> & { delay?: number; y?: number }) {
+export function Reveal({
+  children,
+  delay = 0,
+  y = 24,
+  className,
+  ...rest
+}: HTMLMotionProps<"div"> & { delay?: number; y?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y }}
@@ -55,10 +86,37 @@ export function Reveal({ children, delay = 0, y = 24, className, ...rest }: HTML
   );
 }
 
-const ratios = { portrait: "aspect-[4/5]", tall: "aspect-[3/4]", square: "aspect-square", wide: "aspect-[16/9]", landscape: "aspect-[3/2]", fill: "" };
+const ratios = {
+  portrait: "aspect-[4/5]",
+  tall: "aspect-[3/4]",
+  square: "aspect-square",
+  wide: "aspect-[16/9]",
+  landscape: "aspect-[3/2]",
+  fill: "",
+};
 
 /** Reusable image frame: clip reveal on enter, optional hover zoom (needs a `group` parent), placeholder when no src. */
-export function ImageReveal({ src, alt, ratio = "portrait", className, eager, hoverScale, width, height, position }: { src?: string | undefined; alt: string; ratio?: keyof typeof ratios; className?: string; eager?: boolean; hoverScale?: boolean; width?: number; height?: number; position?: string }) {
+export function ImageReveal({
+  src,
+  alt,
+  ratio = "portrait",
+  className,
+  eager,
+  hoverScale,
+  width,
+  height,
+  position,
+}: {
+  src?: string | undefined;
+  alt: string;
+  ratio?: keyof typeof ratios;
+  className?: string;
+  eager?: boolean;
+  hoverScale?: boolean;
+  width?: number;
+  height?: number;
+  position?: string;
+}) {
   return (
     <motion.div
       initial={{ clipPath: "inset(8% 0% 8% 0%)" }}
@@ -68,7 +126,13 @@ export function ImageReveal({ src, alt, ratio = "portrait", className, eager, ho
       className={cn("relative overflow-hidden bg-secondary", ratios[ratio], className)}
     >
       {src ? (
-        <motion.div initial={{ scale: 1.1 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.8, ease }} className="absolute inset-0">
+        <motion.div
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.8, ease }}
+          className="absolute inset-0"
+        >
           <img
             src={src}
             alt={alt}
@@ -77,11 +141,18 @@ export function ImageReveal({ src, alt, ratio = "portrait", className, eager, ho
             loading={eager ? "eager" : "lazy"}
             decoding="async"
             style={position ? { objectPosition: position } : undefined}
-            className={cn("h-full w-full object-cover", hoverScale && "transition-transform duration-700 ease-lux group-hover:scale-[1.03]")}
+            className={cn(
+              "h-full w-full object-cover",
+              hoverScale && "transition-transform duration-700 ease-lux group-hover:scale-[1.03]",
+            )}
           />
         </motion.div>
       ) : (
-        <div className="placeholder-frame absolute inset-0 flex items-center justify-center" role="img" aria-label={alt}>
+        <div
+          className="placeholder-frame absolute inset-0 flex items-center justify-center"
+          role="img"
+          aria-label={alt}
+        >
           <span className="wordmark text-xs text-muted-foreground/60">Élan</span>
         </div>
       )}
