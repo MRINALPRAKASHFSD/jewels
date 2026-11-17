@@ -5,7 +5,19 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
 
+let didStubUrl = false;
+let didStubKey = false;
+
 function renderAt(path: string) {
+  if (!process.env["SUPABASE_URL"] && !process.env["VITE_SUPABASE_URL"]) {
+    process.env["SUPABASE_URL"] = "https://example.supabase.co";
+    didStubUrl = true;
+  }
+  if (!process.env["SUPABASE_PUBLISHABLE_KEY"] && !process.env["VITE_SUPABASE_PUBLISHABLE_KEY"]) {
+    process.env["SUPABASE_PUBLISHABLE_KEY"] = "sb_publishable_test_key";
+    didStubKey = true;
+  }
+
   const queryClient = new QueryClient();
   const router = createRouter({
     routeTree,
@@ -18,6 +30,14 @@ function renderAt(path: string) {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  if (didStubUrl) {
+    delete process.env["SUPABASE_URL"];
+    didStubUrl = false;
+  }
+  if (didStubKey) {
+    delete process.env["SUPABASE_PUBLISHABLE_KEY"];
+    didStubKey = false;
+  }
 });
 
 // Assert only that the router mounts and paints, never page content:
