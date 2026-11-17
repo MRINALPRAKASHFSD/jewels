@@ -13,6 +13,7 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
+import { Route as SiteCheckoutRouteImport } from './routes/_site.checkout'
 import { Route as SiteCollectionsRouteImport } from './routes/_site.collections'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
 import { Route as SiteCraftsmanshipRouteImport } from './routes/_site.craftsmanship'
@@ -28,6 +29,7 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminPreviewRouteImport } from './routes/admin_.preview'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin_.reset-password'
+import { Route as SiteCheckoutReturnRouteImport } from './routes/_site.checkout.return'
 import { Route as SiteJewelleryIndexRouteImport } from './routes/_site.jewellery.index'
 import { Route as SiteJewellerySlugRouteImport } from './routes/_site.jewellery.$slug'
 import { Route as AdminCollectionsIndexRouteImport } from './routes/admin.collections.index'
@@ -35,6 +37,7 @@ import { Route as AdminCollectionsIdRouteImport } from './routes/admin.collectio
 import { Route as AdminCollectionsNewRouteImport } from './routes/admin.collections.new'
 import { Route as AdminEnquiriesIndexRouteImport } from './routes/admin.enquiries.index'
 import { Route as AdminEnquiriesIdRouteImport } from './routes/admin.enquiries.$id'
+import { Route as AdminOrdersIndexRouteImport } from './routes/admin.orders.index'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin.products.index'
 import { Route as AdminProductsNewRouteImport } from './routes/admin.products.new'
 import { Route as AdminProductsIdEditRouteImport } from './routes/admin.products.$id.edit'
@@ -56,6 +59,11 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteAboutRoute = SiteAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteCheckoutRoute = SiteCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteCollectionsRoute = SiteCollectionsRouteImport.update({
@@ -133,6 +141,11 @@ const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
   path: '/admin/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteCheckoutReturnRoute = SiteCheckoutReturnRouteImport.update({
+  id: '/return',
+  path: '/return',
+  getParentRoute: () => SiteCheckoutRoute,
+} as any)
 const SiteJewelleryIndexRoute = SiteJewelleryIndexRouteImport.update({
   id: '/jewellery/',
   path: '/jewellery/',
@@ -168,6 +181,11 @@ const AdminEnquiriesIdRoute = AdminEnquiriesIdRouteImport.update({
   path: '/enquiries/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOrdersIndexRoute = AdminOrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -188,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/about': typeof SiteAboutRoute
+  '/checkout': typeof SiteCheckoutRouteWithChildren
   '/collections': typeof SiteCollectionsRoute
   '/contact': typeof SiteContactRoute
   '/craftsmanship': typeof SiteCraftsmanshipRoute
@@ -203,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/admin/preview': typeof AdminPreviewRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/': typeof AdminIndexRoute
+  '/checkout/return': typeof SiteCheckoutReturnRoute
   '/jewellery/$slug': typeof SiteJewellerySlugRoute
   '/admin/collections/$id': typeof AdminCollectionsIdRoute
   '/admin/collections/new': typeof AdminCollectionsNewRoute
@@ -211,11 +231,13 @@ export interface FileRoutesByFullPath {
   '/jewellery/': typeof SiteJewelleryIndexRoute
   '/admin/collections/': typeof AdminCollectionsIndexRoute
   '/admin/enquiries/': typeof AdminEnquiriesIndexRoute
+  '/admin/orders/': typeof AdminOrdersIndexRoute
   '/admin/products/': typeof AdminProductsIndexRoute
   '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof SiteAboutRoute
+  '/checkout': typeof SiteCheckoutRouteWithChildren
   '/collections': typeof SiteCollectionsRoute
   '/contact': typeof SiteContactRoute
   '/craftsmanship': typeof SiteCraftsmanshipRoute
@@ -232,6 +254,7 @@ export interface FileRoutesByTo {
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/checkout/return': typeof SiteCheckoutReturnRoute
   '/jewellery/$slug': typeof SiteJewellerySlugRoute
   '/admin/collections/$id': typeof AdminCollectionsIdRoute
   '/admin/collections/new': typeof AdminCollectionsNewRoute
@@ -240,6 +263,7 @@ export interface FileRoutesByTo {
   '/jewellery': typeof SiteJewelleryIndexRoute
   '/admin/collections': typeof AdminCollectionsIndexRoute
   '/admin/enquiries': typeof AdminEnquiriesIndexRoute
+  '/admin/orders': typeof AdminOrdersIndexRoute
   '/admin/products': typeof AdminProductsIndexRoute
   '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
 }
@@ -248,6 +272,7 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
+  '/_site/checkout': typeof SiteCheckoutRouteWithChildren
   '/_site/collections': typeof SiteCollectionsRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/craftsmanship': typeof SiteCraftsmanshipRoute
@@ -264,6 +289,7 @@ export interface FileRoutesById {
   '/admin_/reset-password': typeof AdminResetPasswordRoute
   '/_site/': typeof SiteIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/_site/checkout/return': typeof SiteCheckoutReturnRoute
   '/_site/jewellery/$slug': typeof SiteJewellerySlugRoute
   '/admin/collections/$id': typeof AdminCollectionsIdRoute
   '/admin/collections/new': typeof AdminCollectionsNewRoute
@@ -272,6 +298,7 @@ export interface FileRoutesById {
   '/_site/jewellery/': typeof SiteJewelleryIndexRoute
   '/admin/collections/': typeof AdminCollectionsIndexRoute
   '/admin/enquiries/': typeof AdminEnquiriesIndexRoute
+  '/admin/orders/': typeof AdminOrdersIndexRoute
   '/admin/products/': typeof AdminProductsIndexRoute
   '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
 }
@@ -281,6 +308,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/about'
+    | '/checkout'
     | '/collections'
     | '/contact'
     | '/craftsmanship'
@@ -296,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/preview'
     | '/admin/reset-password'
     | '/admin/'
+    | '/checkout/return'
     | '/jewellery/$slug'
     | '/admin/collections/$id'
     | '/admin/collections/new'
@@ -304,11 +333,13 @@ export interface FileRouteTypes {
     | '/jewellery/'
     | '/admin/collections/'
     | '/admin/enquiries/'
+    | '/admin/orders/'
     | '/admin/products/'
     | '/admin/products/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
+    | '/checkout'
     | '/collections'
     | '/contact'
     | '/craftsmanship'
@@ -325,6 +356,7 @@ export interface FileRouteTypes {
     | '/admin/reset-password'
     | '/'
     | '/admin'
+    | '/checkout/return'
     | '/jewellery/$slug'
     | '/admin/collections/$id'
     | '/admin/collections/new'
@@ -333,6 +365,7 @@ export interface FileRouteTypes {
     | '/jewellery'
     | '/admin/collections'
     | '/admin/enquiries'
+    | '/admin/orders'
     | '/admin/products'
     | '/admin/products/$id/edit'
   id:
@@ -340,6 +373,7 @@ export interface FileRouteTypes {
     | '/_site'
     | '/admin'
     | '/_site/about'
+    | '/_site/checkout'
     | '/_site/collections'
     | '/_site/contact'
     | '/_site/craftsmanship'
@@ -356,6 +390,7 @@ export interface FileRouteTypes {
     | '/admin_/reset-password'
     | '/_site/'
     | '/admin/'
+    | '/_site/checkout/return'
     | '/_site/jewellery/$slug'
     | '/admin/collections/$id'
     | '/admin/collections/new'
@@ -364,6 +399,7 @@ export interface FileRouteTypes {
     | '/_site/jewellery/'
     | '/admin/collections/'
     | '/admin/enquiries/'
+    | '/admin/orders/'
     | '/admin/products/'
     | '/admin/products/$id/edit'
   fileRoutesById: FileRoutesById
@@ -404,6 +440,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof SiteAboutRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/checkout': {
+      id: '/_site/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof SiteCheckoutRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/collections': {
@@ -511,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_site/checkout/return': {
+      id: '/_site/checkout/return'
+      path: '/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof SiteCheckoutReturnRouteImport
+      parentRoute: typeof SiteCheckoutRoute
+    }
     '/_site/jewellery/': {
       id: '/_site/jewellery/'
       path: '/jewellery'
@@ -560,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEnquiriesIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/orders/': {
+      id: '/admin/orders/'
+      path: '/orders'
+      fullPath: '/admin/orders/'
+      preLoaderRoute: typeof AdminOrdersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/products/': {
       id: '/admin/products/'
       path: '/products'
@@ -584,8 +641,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SiteCheckoutRouteChildren {
+  SiteCheckoutReturnRoute: typeof SiteCheckoutReturnRoute
+}
+
+const SiteCheckoutRouteChildren: SiteCheckoutRouteChildren = {
+  SiteCheckoutReturnRoute: SiteCheckoutReturnRoute,
+}
+
+const SiteCheckoutRouteWithChildren = SiteCheckoutRoute._addFileChildren(
+  SiteCheckoutRouteChildren,
+)
+
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
+  SiteCheckoutRoute: typeof SiteCheckoutRouteWithChildren
   SiteCollectionsRoute: typeof SiteCollectionsRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteCraftsmanshipRoute: typeof SiteCraftsmanshipRoute
@@ -598,6 +668,7 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
+  SiteCheckoutRoute: SiteCheckoutRouteWithChildren,
   SiteCollectionsRoute: SiteCollectionsRoute,
   SiteContactRoute: SiteContactRoute,
   SiteCraftsmanshipRoute: SiteCraftsmanshipRoute,
@@ -624,6 +695,7 @@ interface AdminRouteChildren {
   AdminProductsNewRoute: typeof AdminProductsNewRoute
   AdminCollectionsIndexRoute: typeof AdminCollectionsIndexRoute
   AdminEnquiriesIndexRoute: typeof AdminEnquiriesIndexRoute
+  AdminOrdersIndexRoute: typeof AdminOrdersIndexRoute
   AdminProductsIndexRoute: typeof AdminProductsIndexRoute
   AdminProductsIdEditRoute: typeof AdminProductsIdEditRoute
 }
@@ -642,6 +714,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProductsNewRoute: AdminProductsNewRoute,
   AdminCollectionsIndexRoute: AdminCollectionsIndexRoute,
   AdminEnquiriesIndexRoute: AdminEnquiriesIndexRoute,
+  AdminOrdersIndexRoute: AdminOrdersIndexRoute,
   AdminProductsIndexRoute: AdminProductsIndexRoute,
   AdminProductsIdEditRoute: AdminProductsIdEditRoute,
 }

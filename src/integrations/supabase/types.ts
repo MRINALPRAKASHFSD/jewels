@@ -363,6 +363,146 @@ export type Database = {
         };
         Relationships: [];
       };
+      order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_id: string;
+          product_name_snapshot: string;
+          quantity: number;
+          subtotal: number;
+          unit_price: number;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_id: string;
+          product_name_snapshot: string;
+          quantity?: number;
+          subtotal: number;
+          unit_price: number;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: string;
+          product_name_snapshot?: string;
+          quantity?: number;
+          subtotal?: number;
+          unit_price?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      orders: {
+        Row: {
+          amount: number;
+          cf_order_id: string | null;
+          created_at: string;
+          currency: string;
+          customer_email: string;
+          customer_name: string;
+          customer_phone: string;
+          id: string;
+          notes: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          amount: number;
+          cf_order_id?: string | null;
+          created_at?: string;
+          currency?: string;
+          customer_email: string;
+          customer_name: string;
+          customer_phone: string;
+          id?: string;
+          notes?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          amount?: number;
+          cf_order_id?: string | null;
+          created_at?: string;
+          currency?: string;
+          customer_email?: string;
+          customer_name?: string;
+          customer_phone?: string;
+          id?: string;
+          notes?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      payments: {
+        Row: {
+          amount: number;
+          created_at: string;
+          currency: string;
+          gateway: string;
+          gateway_order_id: string | null;
+          gateway_payment_id: string | null;
+          id: string;
+          order_id: string;
+          payment_method: string | null;
+          raw_webhook: Json | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          amount: number;
+          created_at?: string;
+          currency?: string;
+          gateway?: string;
+          gateway_order_id?: string | null;
+          gateway_payment_id?: string | null;
+          id?: string;
+          order_id: string;
+          payment_method?: string | null;
+          raw_webhook?: Json | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          amount?: number;
+          created_at?: string;
+          currency?: string;
+          gateway?: string;
+          gateway_order_id?: string | null;
+          gateway_payment_id?: string | null;
+          id?: string;
+          order_id?: string;
+          payment_method?: string | null;
+          raw_webhook?: Json | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       product_images: {
         Row: {
           alt_text: string | null;

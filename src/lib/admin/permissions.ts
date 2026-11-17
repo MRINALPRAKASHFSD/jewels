@@ -2,8 +2,16 @@
 // The database remains the real enforcement layer — this is presentation only.
 export type AdminRole = "admin" | "editor";
 export type Resource =
-  | "products" | "collections" | "media" | "lookbook" | "enquiries"
-  | "content" | "settings" | "analytics" | "users";
+  | "products"
+  | "collections"
+  | "media"
+  | "lookbook"
+  | "enquiries"
+  | "content"
+  | "settings"
+  | "analytics"
+  | "users"
+  | "orders";
 export type Action = "create" | "read" | "update" | "delete" | "upload";
 
 const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
@@ -17,6 +25,7 @@ const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
     settings: ["read", "update"],
     analytics: ["read"],
     users: ["create", "read", "update", "delete"], // future /admin/settings/users
+    orders: ["read", "update"],
   },
   editor: {
     products: ["create", "read", "update"],
@@ -26,10 +35,15 @@ const MATRIX: Record<AdminRole, Partial<Record<Resource, Action[]>>> = {
     enquiries: ["read", "update"],
     content: ["read", "update"],
     settings: ["read"],
+    orders: ["read"],
   },
 };
 
-export function can(role: AdminRole | null | undefined, resource: Resource, action: Action = "read") {
+export function can(
+  role: AdminRole | null | undefined,
+  resource: Resource,
+  action: Action = "read",
+) {
   if (!role) return false;
   return MATRIX[role][resource]?.includes(action) ?? false;
 }

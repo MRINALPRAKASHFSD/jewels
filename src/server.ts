@@ -1,7 +1,17 @@
+// Load .env into process.env for server-side handlers.
+// Vite injects VITE_* variables into import.meta.env, while server-only secrets
+// (SUPABASE_SERVICE_ROLE_KEY, CASHFREE_APP_ID, CASHFREE_SECRET_KEY) are read from process.env.
+try {
+  process.loadEnvFile?.();
+} catch {
+  // Ignore if .env is absent in production where variables are provided by the host.
+}
+
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { handleCashfreeWebhook } from "./lib/payment/webhook";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -18,8 +28,8 @@ async function getServerEntry(): Promise<ServerEntry> {
   return serverEntryPromise;
 }
 
-// h3 swallows in-handler throws into a normal 500 Response with body
-// {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
+// h3 converts unhandled throws inside handlers into a 500 JSON response with
+// {"unhandled":true,"message":"HTTPError"}, so we inspect 500 JSON responses here.
 async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
   if (response.status < 500) return response;
   const contentType = response.headers.get("content-type") ?? "";
@@ -47,6 +57,11 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const url = new URL(request.url);
+      if (url.pathname === "/api/webhook/cashfree" && request.method === "POST") {
+        return await handleCashfreeWebhook(request);
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
